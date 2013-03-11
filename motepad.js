@@ -113,7 +113,12 @@ define(
             }).appendTo(container);
 
             var text = '';
-            var attributes = $.map(attributeInfo, function() { return createAttributeSequence() });
+            var attributes = {
+            };
+
+            for(var n in attributeInfo) {
+                attributes[n] = createAttributeSequence();
+            }
 
             var styles = new StyleRegistry(extentsStageContainer, attributeInfo);
 
