@@ -2,19 +2,28 @@ define(
     [ 'motepad/binarySearch', 'motepad/layoutBlock' ],
     function(binarySearch, layoutBlock) {
 
+        function tokenize(text, cb) {
+            var rem = text;
+
+            while(rem.length > 0) {
+                var match = /^(\s)|\S+/.exec(rem);
+                var token = match[0];
+
+                var isSpace = (match[1] != null);
+                var forceBreak = token == "\n";
+
+                cb(token, isSpace, forceBreak);
+
+                rem = rem.substring(token.length, rem.length);
+            }
+        }
+
         return function layoutMetaText(maxWidth, text, metaBlockCallback, defaultMetaCode, metaWidth, metaMin, metaMax) {
             var layout = layoutBlock(maxWidth, function(tokenCallback) {
-                var rem = text;
                 var processed = 0;
-
                 var lastMetaCode = defaultMetaCode;
 
-                while(rem.length > 0) {
-                    var match = /^(\s)|\S+/.exec(rem);
-                    var token = match[0];
-
-                    var isSpace = (match[1] != null);
-                    var forceBreak = token == "\n";
+                tokenize(text, function(token, isSpace, forceBreak) {
 
                     tokenCallback(isSpace, forceBreak, function(inlineBlockCallback) {
                         var textIndex = processed;
@@ -34,9 +43,9 @@ define(
                             throw "meta block length mismatch: " + (processed + token.length - textLength);
                     });
 
-                    rem = rem.substring(token.length, rem.length);
                     processed += token.length;
-                }
+
+                });
 
                 // add a zero-width placeholder at the very end
                 // TODO: handle empty last style properly
