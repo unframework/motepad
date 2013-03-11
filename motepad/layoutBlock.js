@@ -2,7 +2,7 @@ define(
     [ 'jQuery', 'motepad/binarySearch' ],
     function($, binarySearch) {
 
-        return function layoutBlock(maxWidth, eachToken) {
+        return function layoutBlock(maxWidth, run) {
             var lines = [];
             var spans = [];
 
@@ -30,44 +30,54 @@ define(
                 nextLineTop += min + max;
             };
 
+            var wordSpans = [];
+            var wordWidth = 0;
+
             // lay out the text by creating text-lines
-            eachToken(function(isSpace, forceBreak, eachInlineBlock) {
-                var tokenSpans = [];
-                var tokenWidth = 0;
+            run(addInlineBlock, addWordBreak);
 
-                eachInlineBlock(function(info, width, min, max) {
-                    var s = {
-                        info: info,
-                        layoutWidth: width,
-                        layoutMin: min,
-                        layoutMax: max
-                    };
+            function addInlineBlock(info, width, min, max) {
+                var s = {
+                    info: info,
+                    layoutWidth: width,
+                    layoutMin: min,
+                    layoutMax: max
+                };
 
-                    tokenSpans.push(s);
-                    tokenWidth += width;
-                });
+                wordSpans.push(s);
+                wordWidth += width;
+            }
 
+            function addWordBreak(isSpace, forceBreakAfter) {
                 // TODO: newlines, other zero-width stuff or whatever gets normalized into spaces/etc
 
-                if(forceBreak || (lineWidth > 0 && lineWidth + tokenWidth > maxWidth)) {
+                // before committing the word, insert line break if it would make the line too long
+                if(lineWidth > 0 && lineWidth + wordWidth > maxWidth) {
                     // when a space token straddles the end of line, we keep it there but still start new line
-                    // NOTE: we also always do this for the line-break blocks
-                    if(isSpace || forceBreak) {
-                        lineSpans.push(tokenSpans[0]);
+                    if(isSpace || forceBreakAfter) {
+                        lineSpans.push(wordSpans[0]); // TODO: double-check this
 
-                        tokenSpans = [];
-                        tokenWidth = 0;
+                        wordSpans = [];
+                        wordWidth = 0;
                     }
 
+                    // insert line break after the line so far
                     commitLineSpans(lineSpans);
 
                     lineWidth = 0;
                     lineSpans = [];
                 }
 
-                lineSpans = lineSpans.concat(tokenSpans);
-                lineWidth += tokenWidth;
-            });
+                // add word to the line and start new one
+                lineSpans = lineSpans.concat(wordSpans);
+                lineWidth += wordWidth;
+
+                wordSpans = [];
+                wordWidth = 0;
+            }
+
+            if(wordSpans.length != 0)
+                throw "did not get trailing word break";
 
             // commit the remaining spans
             if(lineSpans.length > 0)

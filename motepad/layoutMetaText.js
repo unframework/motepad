@@ -19,39 +19,36 @@ define(
         }
 
         return function layoutMetaText(maxWidth, text, metaBlockCallback, defaultMetaCode, metaWidth, metaMin, metaMax) {
-            var layout = layoutBlock(maxWidth, function(tokenCallback) {
+            var layout = layoutBlock(maxWidth, function(addInlineBlock, addWordBreak) {
                 var processed = 0;
                 var lastMetaCode = defaultMetaCode;
 
                 tokenize(text, function(token, isSpace, forceBreak) {
+                    var textIndex = processed;
 
-                    tokenCallback(isSpace, forceBreak, function(inlineBlockCallback) {
-                        var textIndex = processed;
+                    metaBlockCallback(token.length, function(metaCode, textLength) {
+                        var info = { textIndex: textIndex, textLength: textLength, metaCode: metaCode };
+                        var str = text.substring(textIndex, textIndex + textLength);
+                        var width = metaWidth(metaCode, str == "\n" ? ' ' : str);
 
-                        metaBlockCallback(token.length, function(metaCode, textLength) {
-                            var info = { textIndex: textIndex, textLength: textLength, metaCode: metaCode };
-                            var str = text.substring(textIndex, textIndex + textLength);
-                            var width = metaWidth(metaCode, str == "\n" ? ' ' : str);
+                        addInlineBlock(info, width, metaMin(metaCode), metaMax(metaCode));
 
-                            inlineBlockCallback(info, width, metaMin(metaCode), metaMax(metaCode));
-
-                            textIndex += textLength;
-                            lastMetaCode = metaCode;
-                        });
-
-                        if(textIndex != processed + token.length)
-                            throw "meta block length mismatch: " + (processed + token.length - textLength);
+                        textIndex += textLength;
+                        lastMetaCode = metaCode;
                     });
 
-                    processed += token.length;
+                    addWordBreak(isSpace, forceBreak);
 
+                    if(textIndex != processed + token.length)
+                        throw "meta block length mismatch: " + (processed + token.length - textLength);
+
+                    processed += token.length;
                 });
 
                 // add a zero-width placeholder at the very end
                 // TODO: handle empty last style properly
-                tokenCallback(false, false, function(inlineBlockCallback) {
-                    inlineBlockCallback({ textIndex: processed, textLength: 0, metaCode: lastMetaCode }, 0, metaMin(lastMetaCode), metaMax(lastMetaCode));
-                });
+                addInlineBlock({ textIndex: processed, textLength: 0, metaCode: lastMetaCode }, 0, metaMin(lastMetaCode), metaMax(lastMetaCode));
+                addWordBreak(false, false);
             });
 
             function computeSpanOffset(info, textIndex) {
