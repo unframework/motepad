@@ -1,3 +1,8 @@
+/**
+ * Copyright 2011, 2013 Nick Matantsev
+ * Dual-licensed under the MIT or GPL Version 2 licenses.
+ */
+
 define(
     ['jquery-1.9.1.min', 'htmlparser'],
     function(jq, HTMLParser) {
