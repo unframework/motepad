@@ -42,7 +42,7 @@ define(
             }
         }
 
-        function initRenderer(outerContainer, container, styles) {
+        function initRenderer(outerContainer, container) {
             // display element containers
             var spanContainer = $('<div></div>').appendTo(container);
             spanContainer.css(resetMetricsCss).css({

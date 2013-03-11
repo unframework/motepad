@@ -10,6 +10,7 @@ define(
         'motepad/resetCss',
         'motepad/AttributeSequence',
         'motepad/Style',
+        'motepad/StyleRegistry',
         'motepad/Renderer',
         'motepad/Input',
         'motepad/layoutBlock',
@@ -21,6 +22,7 @@ define(
         resetMetricsCss,
         createAttributeSequence,
         createStyle,
+        StyleRegistry,
         initRenderer,
         initInput,
         layoutBlock,
@@ -118,25 +120,7 @@ define(
                 attributes[n] = createAttributeSequence();
             }
 
-            var styles = { };
-
-            function getStyleFor(values) {
-                var codeParts = [];
-                var css = {};
-                for(var n in attributeInfo) {
-                    codeParts.push(n);
-                    codeParts.push(attributeInfo[n].getHashCode(values[n]));
-
-                    attributeInfo[n].applyVisual(values[n], css);
-                }
-
-                var code = codeParts.join("\u0001");
-
-                if(styles[code] == null)
-                    styles[code] = createStyle(extentsStageContainer, css, code);
-
-                return styles[code];
-            }
+            var styles = new StyleRegistry(extentsStageContainer, attributeInfo);
 
             function getAttributeValues(name, index, length) {
                 var values = [];
@@ -146,7 +130,7 @@ define(
 
             var inputHandler = null;
 
-            var render = initRenderer(outerContainer, container, styles);
+            var render = initRenderer(outerContainer, container);
 
             initInput(outerContainer, container, undo, redo, function(inputType, arg) {
                 inputHandler(inputType, arg);
@@ -207,7 +191,7 @@ define(
                 for(var n in attributeInfo)
                     currentValues[n] = attributeInfo[n].defaultValue;
 
-                var defaultStyle = getStyleFor(currentValues);
+                var defaultStyle = styles.getOrCreate(currentValues);
 
                 var consumers = {};
                 for(var n in attributes) {
@@ -229,7 +213,7 @@ define(
                             currentValues[n] = consumers[n].runValue;
                         }
 
-                        var style = getStyleFor(currentValues);
+                        var style = styles.getOrCreate(currentValues);
 
                         callback(style, textLength);
 
@@ -247,8 +231,7 @@ define(
                 });
 
                 // free up style cache memory
-                for(var n in styles)
-                    styles[n].cleanCache();
+                styles.each(function(style) { style.cleanCache() });
 
                 return result;
             }
