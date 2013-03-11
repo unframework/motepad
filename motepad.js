@@ -50,12 +50,12 @@ define(
             /*
             link: {
                 defaultValue: null,
+                getHashCode: function(v) { return v != null ? '1' : '' },
                 applyVisual: function(v, css) {
                     if(v != null) {
                         css['color'] = '#00f';
                         css['border-bottom'] = '1px solid #00f';
                     }
-                    return v != null ? '1' : ''
                 },
                 parseHtmlTag: function(tag, styleAttrs, attrs) {
                     if(tag == 'a') {
@@ -68,7 +68,8 @@ define(
             */
             bold: {
                 defaultValue: false,
-                applyVisual: function(v, css) { css['font-weight'] = v ? 'bold' : 'normal'; return v ? '1' : '' },
+                getHashCode: function(v) { return v ? '1' : '' },
+                applyVisual: function(v, css) { css['font-weight'] = v ? 'bold' : 'normal' },
                 parseHtmlTag: function(tag, styleAttrs) {
                     if(tag == 'b' || tag == 'strong' || styleAttrs['font-weight'] == 'bold')
                         return true;
@@ -78,7 +79,8 @@ define(
             },
             italic: {
                 defaultValue: false,
-                applyVisual: function(v, css) { css['font-style'] = v ? 'italic' : 'normal'; return v ? '1' : '' },
+                getHashCode: function(v) { return v ? '1' : '' },
+                applyVisual: function(v, css) { css['font-style'] = v ? 'italic' : 'normal' },
                 parseHtmlTag: function(tag, styleAttrs) {
                     if(tag == 'i' || tag == 'em' || styleAttrs['font-style'] == 'italic')
                         return true;
@@ -123,7 +125,9 @@ define(
                 var css = {};
                 for(var n in attributeInfo) {
                     codeParts.push(n);
-                    codeParts.push(attributeInfo[n].applyVisual(values[n], css));
+                    codeParts.push(attributeInfo[n].getHashCode(values[n]));
+
+                    attributeInfo[n].applyVisual(values[n], css);
                 }
 
                 var code = codeParts.join("\u0001");
