@@ -118,7 +118,7 @@ define(
 
             var styles = { };
 
-            function getStyleCode(values) {
+            function getStyleFor(values) {
                 var codeParts = [];
                 var css = {};
                 for(var n in attributeInfo) {
@@ -129,8 +129,9 @@ define(
                 var code = codeParts.join("\u0001");
 
                 if(styles[code] == null)
-                    styles[code] = createStyle(extentsStageContainer, css);
-                return code;
+                    styles[code] = createStyle(extentsStageContainer, css, code);
+
+                return styles[code];
             }
 
             function getAttributeValues(name, index, length) {
@@ -202,7 +203,7 @@ define(
                 for(var n in attributeInfo)
                     currentValues[n] = attributeInfo[n].defaultValue;
 
-                var defaultMetaCode = getStyleCode(currentValues);
+                var defaultStyle = getStyleFor(currentValues);
 
                 var consumers = {};
                 for(var n in attributes) {
@@ -224,21 +225,21 @@ define(
                             currentValues[n] = consumers[n].runValue;
                         }
 
-                        var metaCode = getStyleCode(currentValues);
+                        var style = getStyleFor(currentValues);
 
-                        callback(metaCode, textLength);
+                        callback(style, textLength);
 
                         for(var n in consumers)
                             consumers[n].advance(textLength);
 
                         leftover -= textLength;
                     }
-                }, defaultMetaCode, function(metaCode, spanText) {
-                    return styles[metaCode].computeWidth(spanText);
-                }, function(metaCode) {
-                    return styles[metaCode].min;
-                }, function(metaCode) {
-                    return styles[metaCode].max;
+                }, defaultStyle, function(style, spanText) {
+                    return style.computeWidth(spanText);
+                }, function(style) {
+                    return style.min;
+                }, function(style) {
+                    return style.max;
                 });
 
                 // free up style cache memory

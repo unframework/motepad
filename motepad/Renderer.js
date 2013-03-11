@@ -80,9 +80,9 @@ define(
                     var bottom = 0;
                     var displayCodeParts = [];
 
-                    layout.eachTextSpan(function(metaCode, spanText, left, top, width, height) {
+                    layout.eachTextSpan(function(style, spanText, left, top, width, height) {
                         // TODO: ignore the whitespace spans
-                        var heavyCode = metaCode + '|' + spanText;
+                        var heavyCode = style.hashCode + '|' + spanText;
                         var lightCache = domWordCache.put(heavyCode, function() {
                             var result = createCache();
                             result.freeNodes = [];
@@ -94,7 +94,7 @@ define(
                             var dom = lightCache.freeNodes.length > 0 ? lightCache.freeNodes.pop() : null;
                             if(dom == null) {
                                 dom = $('<div></div>').appendTo(spanContainer);
-                                dom.css(styles[metaCode].css).css({ display: 'block', position: 'absolute' });
+                                dom.css(style.css).css({ display: 'block', position: 'absolute' });
                                 dom.text(spanText);
                             } else {
                                 dom.show();

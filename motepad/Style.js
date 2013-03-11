@@ -2,7 +2,7 @@ define(
     [ 'jQuery' ],
     function($) {
 
-        function createStyle(stageContainer, extraCss) {
+        function createStyle(stageContainer, extraCss, hashCode) {
             var fullCss = $.extend({
                 'font': 'inherit'
             }, extraCss, {
@@ -24,7 +24,7 @@ define(
             var computeCount = 0;
 
             return {
-                min: min, max: max, css: fullCss,
+                min: min, max: max, css: fullCss, hashCode: hashCode,
 
                 computeWidth: function(text) {
                     var result = nextWidthCache[text];
