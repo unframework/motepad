@@ -1,6 +1,6 @@
 define(
-    [],
-    function() {
+    [ 'jQuery' ],
+    function($) {
 
         function createStyle(stageContainer, extraCss) {
             var fullCss = $.extend({

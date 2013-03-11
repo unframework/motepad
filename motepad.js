@@ -5,7 +5,7 @@
 
 define(
     [
-        'jquery-1.9.1.min',
+        'jQuery',
         'htmlparser',
         'motepad/resetCss',
         'motepad/AttributeSequence',
@@ -16,7 +16,7 @@ define(
         'motepad/layoutMetaText'
     ],
     function(
-        jq,
+        $,
         HTMLParser,
         resetMetricsCss,
         createAttributeSequence,

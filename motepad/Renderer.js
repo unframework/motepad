@@ -1,6 +1,6 @@
 define(
-    [ 'motepad/resetCss' ],
-    function(resetMetricsCss) {
+    [ 'jQuery', 'motepad/resetCss' ],
+    function($, resetMetricsCss) {
 
         // reusable pass-based caching logic
         function createCache() {

@@ -1,6 +1,6 @@
 define(
-    [],
-    function() {
+    [ 'jQuery' ],
+    function($) {
         function createAttributeSequenceImpl(runs) {
             function eachRun(callback) {
                 var start = 0;

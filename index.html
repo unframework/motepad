@@ -5,7 +5,13 @@
 
         <script>
             var require = {
+                paths: {
+                    'jQuery': 'jquery-1.9.1.min'
+                },
                 shim: {
+                    'jQuery': {
+                        exports: 'jQuery'
+                    },
                     'htmlparser': {
                         exports: 'HTMLParser'
                     }

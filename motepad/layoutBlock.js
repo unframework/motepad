@@ -1,6 +1,6 @@
 define(
-    [ 'motepad/binarySearch' ],
-    function(binarySearch) {
+    [ 'jQuery', 'motepad/binarySearch' ],
+    function($, binarySearch) {
 
         return function layoutBlock(maxWidth, eachToken) {
             var lines = [];
