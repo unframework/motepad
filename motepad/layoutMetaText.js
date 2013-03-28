@@ -18,23 +18,23 @@ define(
             }
         }
 
-        return function layoutMetaText(maxWidth, text, metaBlockCallback, defaultMetaCode, metaWidth, metaMin, metaMax) {
+        return function layoutMetaText(maxWidth, text, metaBlockCallback, defaultStyle, metaWidth, metaMin, metaMax) {
             var layout = layoutBlock(maxWidth, function(addInlineBlock, addWordBreak) {
                 var processed = 0;
-                var lastMetaCode = defaultMetaCode;
+                var lastStyle = defaultStyle;
 
                 tokenize(text, function(token, isSpace, forceBreak) {
                     var textIndex = processed;
 
-                    metaBlockCallback(token.length, function(metaCode, textLength) {
-                        var info = { textIndex: textIndex, textLength: textLength, metaCode: metaCode };
+                    metaBlockCallback(token.length, function(style, textLength) {
+                        var info = { textIndex: textIndex, textLength: textLength, style: style };
                         var str = text.substring(textIndex, textIndex + textLength);
-                        var width = metaWidth(metaCode, str == "\n" ? ' ' : str);
+                        var width = metaWidth(style, str == "\n" ? ' ' : str);
 
-                        addInlineBlock(info, width, metaMin(metaCode), metaMax(metaCode));
+                        addInlineBlock(info, width, metaMin(style), metaMax(style));
 
                         textIndex += textLength;
-                        lastMetaCode = metaCode;
+                        lastStyle = style;
                     });
 
                     addWordBreak(isSpace, forceBreak);
@@ -47,12 +47,12 @@ define(
 
                 // add a zero-width placeholder at the very end
                 // TODO: handle empty last style properly
-                addInlineBlock({ textIndex: processed, textLength: 0, metaCode: lastMetaCode }, 0, metaMin(lastMetaCode), metaMax(lastMetaCode));
+                addInlineBlock({ textIndex: processed, textLength: 0, style: lastStyle }, 0, metaMin(lastStyle), metaMax(lastStyle));
                 addWordBreak(false, false);
             });
 
             function computeSpanOffset(info, textIndex) {
-                return metaWidth(info.metaCode, text.substring(info.textIndex, textIndex));
+                return metaWidth(info.style, text.substring(info.textIndex, textIndex));
             }
 
             return {
@@ -71,7 +71,7 @@ define(
                 eachTextSpan: function(callback) {
                     layout.eachSpan(function(info, left, top, width, height) {
                         var spanText = text.substring(info.textIndex, info.textIndex + info.textLength);
-                        callback(info.metaCode, spanText, left, top, width, height);
+                        callback(info.style, spanText, left, top, width, height);
                     });
                 },
 
