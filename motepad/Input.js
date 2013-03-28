@@ -58,7 +58,7 @@ define(
                     inputHandler("insert", "\n");
                 } else if(k == 8) {
                     // backspace
-                    inputHandler("delete", true);
+                    // NOTE: backspace is actioned elsewhere; this is necessary to prevent character insert
                 } else if(e.which) {
                     inputHandler("insert", String.fromCharCode(e.which));
                 } else {
@@ -89,6 +89,9 @@ define(
                 } else if(k == 46) {
                     // delete
                     inputHandler("delete", false);
+                } else if(k == 8) {
+                    // backspace
+                    inputHandler("delete", true);
                 } else if(k == 36) {
                     // home
                     inputHandler("inLine" + sel, -1);
