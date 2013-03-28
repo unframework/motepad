@@ -13,8 +13,7 @@ define(
         'motepad/StyleRegistry',
         'motepad/Renderer',
         'motepad/Input',
-        'motepad/layoutBlock',
-        'motepad/layoutMetaText'
+        'motepad/layoutRichText'
     ],
     function(
         $,
@@ -25,8 +24,7 @@ define(
         StyleRegistry,
         initRenderer,
         initInput,
-        layoutBlock,
-        layoutMetaText
+        layoutRichText
     ) {
 
         var richTextDataId = 'richText_ba4c44091e9a88f061d31dab36cb7e20';
@@ -174,66 +172,6 @@ define(
                 text = level.text;
                 attributes = $.extend({}, level.attributes);
                 level.afterPrevOp('refresh');
-            }
-
-            function layoutRichText() {
-                var areaWidth = container.width();
-
-                /*
-                for(var n in attributes) {
-                    console.log('-- attr: ' + n);
-                    attributes[n].eachRun(0, 1000, function(value, i, length) { console.log('  ' + length + ': ' + value) })
-                }
-                console.log('--------');
-                */
-
-                var currentValues = {};
-                for(var n in attributeInfo)
-                    currentValues[n] = attributeInfo[n].defaultValue;
-
-                var defaultStyle = styles.getOrCreate(currentValues);
-
-                var consumers = {};
-                for(var n in attributes) {
-                    consumers[n] = attributes[n].createConsumer();
-                }
-
-                var result = layoutMetaText(areaWidth, text, function(tokenLength, callback) {
-                    var leftover = tokenLength;
-
-                    while(leftover > 0) {
-                        // find maximum inline block length
-                        var textLength = leftover;
-                        for(var n in consumers) {
-                            // TODO: this check should not be necessary
-                            if(consumers[n].runLength == null)
-                                throw "consumer overrun!";
-
-                            textLength = Math.min(textLength, consumers[n].runLength);
-                            currentValues[n] = consumers[n].runValue;
-                        }
-
-                        var style = styles.getOrCreate(currentValues);
-
-                        callback(style, textLength);
-
-                        for(var n in consumers)
-                            consumers[n].advance(textLength);
-
-                        leftover -= textLength;
-                    }
-                }, defaultStyle, function(style, spanText) {
-                    return style.computeWidth(spanText);
-                }, function(style) {
-                    return style.min;
-                }, function(style) {
-                    return style.max;
-                });
-
-                // free up style cache memory
-                styles.each(function(style) { style.cleanCache() });
-
-                return result;
             }
 
             function insertHTML(start, html) {
@@ -479,7 +417,7 @@ define(
                                 for(var n in attributes)
                                     attributes[n] = attributes[n].remove(delIndex, 1);
 
-                                var newLayout = layoutRichText();
+                                var newLayout = layoutRichText(container.width(), text, attributes, attributeInfo, styles);
                                 cursorMode(newLayout, isFocused, delIndex);
 
                             });
@@ -493,7 +431,7 @@ define(
                             for(var n in attributes)
                                 attributes[n] = attributes[n].insert(values[n], cursorIndex, arg.length);
 
-                            var newLayout = layoutRichText();
+                            var newLayout = layoutRichText(container.width(), text, attributes, attributeInfo, styles);
                             cursorMode(newLayout, isFocused, cursorIndex + arg.length, null, values);
 
                         });
@@ -502,7 +440,7 @@ define(
                             var distanceFromEnd = text.length - cursorIndex;
                             insertHTML(cursorIndex, arg);
 
-                            var newLayout = layoutRichText();
+                            var newLayout = layoutRichText(container.width(), text, attributes, attributeInfo, styles);
                             cursorMode(newLayout, isFocused, text.length - distanceFromEnd);
                         });
                     } else if(input == "styleModifier") {
@@ -593,7 +531,7 @@ define(
                             for(var n in attributes)
                                 attributes[n] = attributes[n].remove(a, b - a);
 
-                            var newLayout = layoutRichText();
+                            var newLayout = layoutRichText(container.width(), text, attributes, attributeInfo, styles);
                             cursorMode(newLayout, isFocused, a);
 
                         }); // NOTE: doing a two-step undo here
@@ -615,7 +553,7 @@ define(
 
                                 attributes[arg] = attributes[arg].set(newValue, a, b - a);
 
-                                var newLayout = layoutRichText();
+                                var newLayout = layoutRichText(container.width(), text, attributes, attributeInfo, styles);
                                 selectedMode(newLayout, isFocused, startIndex, endIndex);
                             }
 
@@ -637,7 +575,7 @@ define(
             }
 
             // seed the initial content and mark the first undo snapshot
-            cursorMode(layoutRichText(), false, 0);
+            cursorMode(layoutRichText(container.width(), text, attributes, attributeInfo, styles), false, 0);
 
             undoable(function() {
                 var initial = parent.val();
