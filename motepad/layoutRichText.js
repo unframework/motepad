@@ -46,13 +46,7 @@ define(
 
                     leftover -= textLength;
                 }
-            }, defaultStyle, function(style, spanText) {
-                return style.computeWidth(spanText);
-            }, function(style) {
-                return style.min;
-            }, function(style) {
-                return style.max;
-            });
+            }, defaultStyle);
 
             // free up style cache memory
             styles.each(function(style) { style.cleanCache() });
