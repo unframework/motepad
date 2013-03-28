@@ -52,7 +52,6 @@ define(
                     prevWidthCache = nextWidthCache;
                     nextWidthCache = {};
 
-                    console.log('computed: ' + computeCount);
                     computeCount = 0;
                 }
             }

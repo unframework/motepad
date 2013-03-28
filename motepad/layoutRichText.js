@@ -3,14 +3,6 @@ define(
     function(binarySearch, layoutBlock, layoutMetaText) {
 
         return function layoutRichText(areaWidth, text, attributes, attributeInfo, styles) {
-            /*
-            for(var n in attributes) {
-                console.log('-- attr: ' + n);
-                attributes[n].eachRun(0, 1000, function(value, i, length) { console.log('  ' + length + ': ' + value) })
-            }
-            console.log('--------');
-            */
-
             var currentValues = {};
             for(var n in attributeInfo)
                 currentValues[n] = attributeInfo[n].defaultValue;

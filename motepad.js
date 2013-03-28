@@ -42,9 +42,11 @@ define(
             }
         }
 
+        /*
         createAttributeSequence().insert('test', 0, 11).insert('test', 1, 9).insert('test2', 5, 10).set('test', 5, 10).eachRun(0, 30, function(v, s, len) {
             console.log('- ' + v + ' ' + s + ',' + len);
         });
+        */
 
         var attributeInfo = {
             /*
