@@ -50,7 +50,7 @@ define(
             }).attr('contentEditable', 'true').keypress(function(e) {
                 var k = e.keyCode;
 
-                if(e.metaKey)
+                if(e.ctrlKey)
                     return true;
 
                 if(k == 13) {
@@ -98,7 +98,7 @@ define(
                 } else if(k == 35) {
                     // end
                     inputHandler("inLine" + sel, 1);
-                } else if(e.metaKey) {
+                } else if(e.ctrlKey) {
                     // misc Ctrl+? shortcuts
                     if(k == 66) {
                         // "b"
