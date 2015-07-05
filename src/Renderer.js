@@ -135,7 +135,7 @@ function initRenderer(outerContainer, container) {
                     height: height,
                     width: Math.floor(height / 16) + 1
                 }).animate({ dummy: 1 }, 400, function() {
-                    if(cursor.css('display') == 'none')
+                    if(cursor.css('display') === 'none')
                         cursor.show();
                     else
                         cursor.hide();
@@ -151,7 +151,7 @@ function initRenderer(outerContainer, container) {
 
         // render selection, if it has changed
         var selectionId = selStart + '..' + selEnd + '!' + isFocused;
-        if(selectionId != lastDrawnSelectionId) {
+        if(selectionId !== lastDrawnSelectionId) {
             lastDrawnSelectionId = selectionId;
 
             var displayCodeParts = [];

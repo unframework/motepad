@@ -9,7 +9,7 @@ function tokenize(text, cb) {
         var token = match[0];
 
         var isSpace = (match[1] !== null);
-        var forceBreak = token == "\n";
+        var forceBreak = token === "\n";
 
         cb(token, isSpace, forceBreak);
 
@@ -28,7 +28,7 @@ module.exports = function layoutMetaText(maxWidth, text, metaBlockCallback, defa
             metaBlockCallback(token.length, function(style, textLength) {
                 var info = { textIndex: textIndex, textLength: textLength, style: style };
                 var str = text.substring(textIndex, textIndex + textLength);
-                var width = style.computeWidth(str == "\n" ? ' ' : str);
+                var width = style.computeWidth(str === "\n" ? ' ' : str);
 
                 addInlineBlock(info, width, style.min, style.max);
 
@@ -38,7 +38,7 @@ module.exports = function layoutMetaText(maxWidth, text, metaBlockCallback, defa
 
             addWordBreak(isSpace, forceBreak);
 
-            if(textIndex != processed + token.length)
+            if(textIndex !== processed + token.length)
                 throw "meta block length mismatch: " + (processed + token.length - textLength);
 
             processed += token.length;

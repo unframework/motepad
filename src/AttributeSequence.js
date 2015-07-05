@@ -20,7 +20,7 @@ function createAttributeSequenceImpl(runs) {
                 if(runStart + run.length <= start) {
                     newRuns.push(run);
                 } else {
-                    if(run.value == value) {
+                    if(run.value === value) {
                         // simple merge
                         newRuns.push({ value: value, length: run.length + length });
                     } else {
@@ -34,7 +34,7 @@ function createAttributeSequenceImpl(runs) {
                             // the new run comes in contact with previous run
                             if(newRuns.length > 0) {
                                 var lastRun = newRuns[newRuns.length - 1];
-                                if(lastRun.value == value) {
+                                if(lastRun.value === value) {
                                     length += lastRun.length;
                                     newRuns.pop(); // remove the last run (it is unmodifiable)
                                 }
@@ -58,7 +58,7 @@ function createAttributeSequenceImpl(runs) {
                 // the new run comes in contact with previous run
                 if(newRuns.length > 0) {
                     var lastRun = newRuns[newRuns.length - 1];
-                    if(lastRun.value == value) {
+                    if(lastRun.value === value) {
                         length += lastRun.length;
                         newRuns.pop(); // remove the last run (it is unmodifiable)
                     }
@@ -110,7 +110,7 @@ function createAttributeSequenceImpl(runs) {
                     return;
 
                 if(mergeRun !== null) {
-                    if(mergeRun.value == add.value) {
+                    if(mergeRun.value === add.value) {
                         mergeRun.length += add.length;
                     } else {
                         newRuns.push(add); // TODO: copy external data?
@@ -120,7 +120,7 @@ function createAttributeSequenceImpl(runs) {
                     // the new run comes in contact with unmodifiable run
                     if(newRuns.length > 0) {
                         var lastRun = newRuns[newRuns.length - 1];
-                        if(lastRun.value == add.value) {
+                        if(lastRun.value === add.value) {
                             add.length += lastRun.length;
                             newRuns.pop(); // remove the unmodifiable run
                         }
@@ -160,7 +160,7 @@ function createAttributeSequenceImpl(runs) {
                         if(len > 0) {
                             if(mergeRun !== null) {
                                 // try and merge with a starting segment
-                                if(mergeRun.value == run.value) {
+                                if(mergeRun.value === run.value) {
                                     mergeRun.length += len;
                                 } else {
                                     mergeRun = { value: run.value, length: len };
@@ -170,7 +170,7 @@ function createAttributeSequenceImpl(runs) {
                                 // if no starting segment, try merging with last run
                                 if(newRuns.length > 0) {
                                     var lastRun = newRuns[newRuns.length - 1];
-                                    if(lastRun.value == run.value) {
+                                    if(lastRun.value === run.value) {
                                         len += lastRun.length;
                                         newRuns.pop(); // remove the last run (it is unmodifiable)
                                     }
@@ -189,7 +189,7 @@ function createAttributeSequenceImpl(runs) {
                         // potential merge with last run
                         if(newRuns.length > 0) {
                             var lastRun = newRuns[newRuns.length - 1];
-                            if(lastRun.value == run.value) {
+                            if(lastRun.value === run.value) {
                                 newRuns.pop(); // remove the last run (it is unmodifiable)
                                 newRuns.push({ value: run.value, length: run.length + lastRun.length });
                                 mergeDone = true;
@@ -231,7 +231,7 @@ function createAttributeSequenceImpl(runs) {
                     if(runStart <= start) {
                         if(mergeRun !== null) {
                             // try to merge with starting segment
-                            if(mergeRun.value == value) {
+                            if(mergeRun.value === value) {
                                 mergeRun.length += length;
                             } else {
                                 mergeRun = { value: value, length: length };
@@ -241,7 +241,7 @@ function createAttributeSequenceImpl(runs) {
                             // try to merge with last run
                             if(newRuns.length > 0) {
                                 var lastRun = newRuns[newRuns.length - 1];
-                                if(lastRun.value == value) {
+                                if(lastRun.value === value) {
                                     length += lastRun.length;
                                     newRuns.pop(); // remove the last run (it is unmodifiable)
                                 }
@@ -256,7 +256,7 @@ function createAttributeSequenceImpl(runs) {
                     if(runStart + run.length > end) {
                         var len = runStart + run.length - end;
 
-                        if(mergeRun.value == run.value) {
+                        if(mergeRun.value === run.value) {
                             mergeRun.length += len;
                         } else {
                             newRuns.push({ value: run.value, length: len });
@@ -266,7 +266,7 @@ function createAttributeSequenceImpl(runs) {
                         mergeRun = null;
                     }
                 } else {
-                    if(mergeRun !== null && mergeRun.value == run.value) {
+                    if(mergeRun !== null && mergeRun.value === run.value) {
                         mergeRun.length += run.length;
                     } else {
                         newRuns.push(run);

@@ -33,7 +33,7 @@ function createStyle(stageContainer, extraCss, hashCode) {
             result = prevWidthCache[text];
             if(result === null) {
                 // NOTE: newlines still need to return normal space width
-                stage.text(text == "\n" ? " " : text);
+                stage.text(text === "\n" ? " " : text);
                 result = stage.width();
 
                 computeCount++;

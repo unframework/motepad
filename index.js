@@ -46,7 +46,7 @@ var attributeInfo = {
             }
         },
         parseHtmlTag: function(tag, styleAttrs, attrs) {
-            if(tag == 'a') {
+            if(tag === 'a') {
                 return attrs['href'];
             }
         },
@@ -59,7 +59,7 @@ var attributeInfo = {
         getHashCode: function(v) { return v ? '1' : ''; },
         applyVisual: function(v, css) { css['font-weight'] = v ? 'bold' : 'normal'; },
         parseHtmlTag: function(tag, styleAttrs) {
-            if(tag == 'b' || tag == 'strong' || styleAttrs['font-weight'] == 'bold')
+            if(tag === 'b' || tag === 'strong' || styleAttrs['font-weight'] === 'bold')
                 return true;
         },
         openHtmlTag: function(v) { return (v ? '<b>' : ''); },
@@ -70,7 +70,7 @@ var attributeInfo = {
         getHashCode: function(v) { return v ? '1' : ''; },
         applyVisual: function(v, css) { css['font-style'] = v ? 'italic' : 'normal'; },
         parseHtmlTag: function(tag, styleAttrs) {
-            if(tag == 'i' || tag == 'em' || styleAttrs['font-style'] == 'italic')
+            if(tag === 'i' || tag === 'em' || styleAttrs['font-style'] === 'italic')
                 return true;
         },
         openHtmlTag: function(v) { return (v ? '<i>' : ''); },
@@ -193,7 +193,7 @@ function init(parent) {
             start: function(tag, attrList, unary) {
                 // unary tags are ignored, except for BR
                 if(unary) {
-                    if(tag == 'br')
+                    if(tag === 'br')
                         addChars("\n");
                     return;
                 }
@@ -205,7 +205,7 @@ function init(parent) {
                 var styleAttrs = {};
                 $.each((style === null ? '' : style).split(';'), function(i, s) {
                     var p = s.split(':');
-                    if(p.length == 2)
+                    if(p.length === 2)
                         styleAttrs[$.trim(p[0])] = $.trim(p[1]);
                 });
 
@@ -228,7 +228,7 @@ function init(parent) {
 
                 // when block elements close, add double-newline
                 // TODO: support other block elements?
-                if(tag == 'p' || tag == 'div') {
+                if(tag === 'p' || tag === 'div') {
                     addChars("\n\n");
                 }
             },
@@ -306,7 +306,7 @@ function init(parent) {
                 // determine how deeply to unwind the current tags
                 var sameLevel = -1;
                 for(var n in attributeInfo) {
-                    if(slice.values[n] != lastValues[n])
+                    if(slice.values[n] !== lastValues[n])
                         break;
 
                     lastValues[n] = slice.values[n];
@@ -367,12 +367,12 @@ function init(parent) {
         }
 
         inputHandler = function(input, arg) {
-            if(input == "character") {
+            if(input === "character") {
                 var delta = (arg > 0 ? 1 : -1);
                 var ni = Math.max(0, Math.min(text.length, cursorIndex + delta));
 
                 cursorMode(layout, isFocused, ni);
-            } else if(input == "line") {
+            } else if(input === "line") {
                 var offset = intendedOffset;
                 if(offset === null)
                     layout.withTextIndex(cursorIndex, function(left) { offset = left; });
@@ -382,21 +382,21 @@ function init(parent) {
                 var ni = layout.findTextIndex(offset, edge);
 
                 cursorMode(layout, isFocused, ni, offset);
-            } else if(input == "inLine") {
+            } else if(input === "inLine") {
                 var newOffset = arg < 0 ? -1 : Number.POSITIVE_INFINITY;
                 var edge = 0;
                 layout.withTextLine(cursorIndex, function(top, height) { edge = top; });
                 var ni = layout.findTextIndex(newOffset, edge);
 
                 cursorMode(layout, isFocused, ni, newOffset);
-            } else if(input == "characterSelect" || input == "lineSelect" || input == "inLineSelect") {
+            } else if(input === "characterSelect" || input === "lineSelect" || input === "inLineSelect") {
                 // switch to selected mode with zero-length selection and repeat the command
                 selectedMode(layout, isFocused, cursorIndex, cursorIndex);
                 inputHandler(input, arg);
-            } else if(input == "mouseDown") {
+            } else if(input === "mouseDown") {
                 var ni = layout.findTextIndex(arg.x, arg.y);
                 draggingMode(layout, ni, ni);
-            } else if(input == "delete") {
+            } else if(input === "delete") {
                 var delIndex = arg ? cursorIndex - 1 : cursorIndex;
                 if(delIndex >= 0 && delIndex < text.length) {
                     undoable(function() {
@@ -410,7 +410,7 @@ function init(parent) {
 
                     });
                 }
-            } else if(input == "insert") {
+            } else if(input === "insert") {
                 undoable(function() {
 
                     var values = entryAttributes === null ? currentAttributes() : entryAttributes;
@@ -423,7 +423,7 @@ function init(parent) {
                     cursorMode(newLayout, isFocused, cursorIndex + arg.length, null, values);
 
                 });
-            } else if(input == "pasteHtml") {
+            } else if(input === "pasteHtml") {
                 undoable(function() {
                     var distanceFromEnd = text.length - cursorIndex;
                     insertHTML(cursorIndex, arg);
@@ -431,20 +431,20 @@ function init(parent) {
                     var newLayout = layoutRichText(container.width(), text, attributes, attributeInfo, styles);
                     cursorMode(newLayout, isFocused, text.length - distanceFromEnd);
                 });
-            } else if(input == "styleModifier") {
+            } else if(input === "styleModifier") {
                 var nm = entryAttributes === null ? currentAttributes() : $.extend({}, entryAttributes);
-                if(arg == 'bold' || arg == 'italic')
+                if(arg === 'bold' || arg === 'italic')
                     nm[arg] = !nm[arg];
                 cursorMode(layout, isFocused, cursorIndex, null, nm);
-            } else if(input == "activeAttributeValues") {
+            } else if(input === "activeAttributeValues") {
                 if(text.length > 0) {
                     return getAttributeValues(arg, cursorIndex > 0 ? cursorIndex - 1 : cursorIndex, 1);
                 } else {
                     return [ attributeInfo[arg].defaultValue ];
                 }
-            } else if(input == "refresh") {
+            } else if(input === "refresh") {
                 cursorMode(layout, isFocused, cursorIndex);
-            } else if(input == "focusUpdate") {
+            } else if(input === "focusUpdate") {
                 cursorMode(layout, arg, cursorIndex);
             }
         };
@@ -454,21 +454,21 @@ function init(parent) {
         render(layout, true, endIndex, startIndex, endIndex);
 
         inputHandler = function(input, arg) {
-            if(input == "mouseMove") {
+            if(input === "mouseMove") {
                 var ni = layout.findTextIndex(arg.x, arg.y);
                 draggingMode(layout, startIndex, ni);
-            } else if(input == "mouseUp") {
+            } else if(input === "mouseUp") {
                 var ni = layout.findTextIndex(arg.x, arg.y);
-                if(ni == startIndex)
+                if(ni === startIndex)
                     cursorMode(layout, true, ni);
                 else
                     selectedMode(layout, true, startIndex, ni);
-            } else if(input == "focusUpdate") {
+            } else if(input === "focusUpdate") {
                 cursorMode(layout, arg, startIndex);
-            } else if(input == "activeAttributeValues") {
+            } else if(input === "activeAttributeValues") {
                 cursorMode(layout, true, startIndex);
                 return inputHandler("activeAttributeValues", arg); // TODO: this better
-            } else if(input == "refresh") {
+            } else if(input === "refresh") {
                 throw "should not end up in dragging mode after undo/redo";
             }
         };
@@ -479,15 +479,15 @@ function init(parent) {
 
         // TODO: keep checking that the selection is non-empty
         inputHandler = function(input, arg) {
-            if(input == "mouseDown") {
+            if(input === "mouseDown") {
                 var ni = layout.findTextIndex(arg.x, arg.y);
                 draggingMode(layout, ni, ni);
-            } else if(input == "characterSelect") {
+            } else if(input === "characterSelect") {
                 var delta = (arg > 0 ? 1 : -1);
                 var ni = Math.max(0, Math.min(text.length, endIndex + delta));
 
                 selectedMode(layout, isFocused, startIndex, ni);
-            } else if(input == "lineSelect") {
+            } else if(input === "lineSelect") {
                 var offset = intendedOffset;
                 if(offset === null)
                     layout.withTextIndex(endIndex, function(left) { offset = left; });
@@ -497,18 +497,18 @@ function init(parent) {
                 var ni = layout.findTextIndex(offset, edge);
 
                 selectedMode(layout, isFocused, startIndex, ni, offset);
-            } else if(input == "inLineSelect") {
+            } else if(input === "inLineSelect") {
                 var newOffset = arg < 0 ? -1 : Number.POSITIVE_INFINITY;
                 var edge = 0;
                 layout.withTextLine(endIndex, function(top, height) { edge = top; });
                 var ni = layout.findTextIndex(newOffset, edge);
 
                 selectedMode(layout, isFocused, startIndex, ni, newOffset);
-            } else if(input == "character" || input == "line" || input == "inLine") {
+            } else if(input === "character" || input === "line" || input === "inLine") {
                 // switch to cursor mode and repeat the command
                 cursorMode(layout, isFocused, endIndex);
                 inputHandler(input, arg);
-            } else if(input == "insert" || input == "delete" || input == "pasteHtml") {
+            } else if(input === "insert" || input === "delete" || input === "pasteHtml") {
                 undoable(function() {
 
                     var a = Math.min(startIndex, endIndex);
@@ -524,15 +524,15 @@ function init(parent) {
 
                 }); // NOTE: doing a two-step undo here
 
-                if(input != "delete")
+                if(input !== "delete")
                     inputHandler(input, arg);
-            } else if(input == "styleModifier") {
+            } else if(input === "styleModifier") {
                 undoable(function() {
 
                     var a = Math.min(startIndex, endIndex);
                     var b = Math.max(startIndex, endIndex);
 
-                    if(arg == 'bold' || arg == 'italic') {
+                    if(arg === 'bold' || arg === 'italic') {
                         // if at least one character is missing this style flag, don't remove it
                         var newValue = false;
 
@@ -546,17 +546,17 @@ function init(parent) {
                     }
 
                 });
-            } else if(input == "copyHtml") {
+            } else if(input === "copyHtml") {
                 var a = Math.min(startIndex, endIndex);
                 var b = Math.max(startIndex, endIndex);
                 return toHTML(a, b - a);
-            } else if(input == "activeAttributeValues") {
+            } else if(input === "activeAttributeValues") {
                 var a = Math.min(startIndex, endIndex);
                 var b = Math.max(startIndex, endIndex);
                 return getAttributeValues(arg, a, b - a);
-            } else if(input == "refresh") {
+            } else if(input === "refresh") {
                 selectedMode(layout, isFocused, startIndex, endIndex);
-            } else if(input == "focusUpdate") {
+            } else if(input === "focusUpdate") {
                 selectedMode(layout, arg, startIndex, endIndex);
             }
         };
