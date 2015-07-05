@@ -1,35 +1,35 @@
 var createStyle = require('./Style');
 
-        var separator = "\u0001";
+var separator = "\u0001";
 
-        function StyleRegistry(extentsStageContainer, attributeInfo) {
-            this.extentsStageContainer = extentsStageContainer;
-            this.attributeInfo = attributeInfo;
-        }
+function StyleRegistry(extentsStageContainer, attributeInfo) {
+    this.extentsStageContainer = extentsStageContainer;
+    this.attributeInfo = attributeInfo;
+}
 
-        StyleRegistry.prototype.getOrCreate = function(values) {
-            var codeParts = [ '' ]; // avoid colliding with normal properties
-            var css = {};
-            for(var n in this.attributeInfo) {
-                codeParts.push(n);
-                codeParts.push(this.attributeInfo[n].getHashCode(values[n]));
+StyleRegistry.prototype.getOrCreate = function(values) {
+    var codeParts = [ '' ]; // avoid colliding with normal properties
+    var css = {};
+    for(var n in this.attributeInfo) {
+        codeParts.push(n);
+        codeParts.push(this.attributeInfo[n].getHashCode(values[n]));
 
-                this.attributeInfo[n].applyVisual(values[n], css);
-            }
+        this.attributeInfo[n].applyVisual(values[n], css);
+    }
 
-            var code = codeParts.join(separator);
+    var code = codeParts.join(separator);
 
-            if(this[code] == null)
-                this[code] = createStyle(this.extentsStageContainer, css, code);
+    if(this[code] == null)
+        this[code] = createStyle(this.extentsStageContainer, css, code);
 
-            return this[code];
-        }
+    return this[code];
+}
 
-        StyleRegistry.prototype.each = function(cb) {
-            for(var n in this) {
-                if(n.charAt(0) === separator)
-                    cb(this[n]);
-            }
-        }
+StyleRegistry.prototype.each = function(cb) {
+    for(var n in this) {
+        if(n.charAt(0) === separator)
+            cb(this[n]);
+    }
+}
 
-        module.exports = StyleRegistry;
+module.exports = StyleRegistry;
