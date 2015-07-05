@@ -5,13 +5,13 @@
 
 var $ = require('jquery');
 var HTMLParser = require('./htmlparser').HTMLParser;
-var resetMetricsCss = require('./motepad/resetCss');
-var createAttributeSequence = require('./motepad/AttributeSequence');
-var createStyle = require('./motepad/Style');
-var StyleRegistry = require('./motepad/StyleRegistry');
-var initRenderer = require('./motepad/Renderer');
-var initInput = require('./motepad/Input');
-var layoutRichText = require('./motepad/layoutRichText');
+var resetMetricsCss = require('./src/resetCss');
+var createAttributeSequence = require('./src/AttributeSequence');
+var createStyle = require('./src/Style');
+var StyleRegistry = require('./src/StyleRegistry');
+var initRenderer = require('./src/Renderer');
+var initInput = require('./src/Input');
+var layoutRichText = require('./src/layoutRichText');
 
 var richTextDataId = 'richText_ba4c44091e9a88f061d31dab36cb7e20';
 
