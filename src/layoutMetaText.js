@@ -8,7 +8,7 @@ function tokenize(text, cb) {
         var match = /^(\s)|\S+/.exec(rem);
         var token = match[0];
 
-        var isSpace = (match[1] != null);
+        var isSpace = (match[1] !== null);
         var forceBreak = token == "\n";
 
         cb(token, isSpace, forceBreak);
@@ -61,7 +61,7 @@ module.exports = function layoutMetaText(maxWidth, text, metaBlockCallback, defa
             layout.withSpanByLocation(x, y, function(info, left, top, width, height) {
                 result = info.textLength < 1 ?
                     info.textIndex :
-                    binarySearch(x - left, info.textIndex, info.textIndex + info.textLength - 1, function(i) { return computeSpanOffset(info, i) });
+                    binarySearch(x - left, info.textIndex, info.textIndex + info.textLength - 1, function(i) { return computeSpanOffset(info, i); });
             });
 
             return result;
@@ -110,16 +110,16 @@ module.exports = function layoutMetaText(maxWidth, text, metaBlockCallback, defa
         },
 
         withTextIndex: function(textIndex, callback) {
-            layout.withSpan(textIndex, function(info) { return info.textIndex }, function(info, left, top, width, height) {
+            layout.withSpan(textIndex, function(info) { return info.textIndex; }, function(info, left, top, width, height) {
                 var charOffset = computeSpanOffset(info, textIndex);
                 callback(left + charOffset, top, height);
             });
         },
 
         withTextLine: function(textIndex, callback) {
-            layout.withLine(textIndex, function(info) { return info.textIndex }, function(top, height) {
+            layout.withLine(textIndex, function(info) { return info.textIndex; }, function(top, height) {
                 callback(top, height);
             });
         }
-    }
-}
+    };
+};

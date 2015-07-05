@@ -97,7 +97,7 @@ function createAttributeSequenceImpl(runs) {
             });
 
             // if no match above, it is a simple append
-            if(added == null) {
+            if(added === null) {
                 added = all;
                 remainder = [];
             }
@@ -109,7 +109,7 @@ function createAttributeSequenceImpl(runs) {
                 if(add.length < 1)
                     return;
 
-                if(mergeRun != null) {
+                if(mergeRun !== null) {
                     if(mergeRun.value == add.value) {
                         mergeRun.length += add.length;
                     } else {
@@ -158,7 +158,7 @@ function createAttributeSequenceImpl(runs) {
                         // keep the ending segment
                         var len = runStart + run.length - end;
                         if(len > 0) {
-                            if(mergeRun != null) {
+                            if(mergeRun !== null) {
                                 // try and merge with a starting segment
                                 if(mergeRun.value == run.value) {
                                     mergeRun.length += len;
@@ -185,7 +185,7 @@ function createAttributeSequenceImpl(runs) {
                     var mergeDone = false;
 
                     // no need to merge with leftover segments
-                    if(mergeRun == null) {
+                    if(mergeRun === null) {
                         // potential merge with last run
                         if(newRuns.length > 0) {
                             var lastRun = newRuns[newRuns.length - 1];
@@ -229,7 +229,7 @@ function createAttributeSequenceImpl(runs) {
                     }
 
                     if(runStart <= start) {
-                        if(mergeRun != null) {
+                        if(mergeRun !== null) {
                             // try to merge with starting segment
                             if(mergeRun.value == value) {
                                 mergeRun.length += length;
@@ -266,7 +266,7 @@ function createAttributeSequenceImpl(runs) {
                         mergeRun = null;
                     }
                 } else {
-                    if(mergeRun != null && mergeRun.value == run.value) {
+                    if(mergeRun !== null && mergeRun.value == run.value) {
                         mergeRun.length += run.length;
                     } else {
                         newRuns.push(run);
@@ -314,7 +314,7 @@ function createAttributeSequenceImpl(runs) {
                     if(currentRunLength < 0)
                         throw "cannot consume past current run length";
 
-                    if(currentRunLength == 0) {
+                    if(currentRunLength === 0) {
                         currentRun++;
 
                         if(currentRun >= runs.length) {
@@ -340,5 +340,5 @@ function createAttributeSequenceImpl(runs) {
 // empty constructor
 module.exports = function() {
     return createAttributeSequenceImpl([]);
-}
+};
 

@@ -75,7 +75,7 @@ module.exports = function layoutBlock(maxWidth, run) {
         wordWidth = 0;
     }
 
-    if(wordSpans.length != 0)
+    if(wordSpans.length !== 0)
         throw "did not get trailing word break";
 
     // commit the remaining spans
@@ -92,23 +92,23 @@ module.exports = function layoutBlock(maxWidth, run) {
         },
 
         withSpan: function(textIndex, textIndexGetter, callback) {
-            var span = spans[binarySearch(textIndex, 0, spans.length - 1, function(i) { return textIndexGetter(spans[i].info) })];
+            var span = spans[binarySearch(textIndex, 0, spans.length - 1, function(i) { return textIndexGetter(spans[i].info); })];
             var line = lines[span.line];
             var base = line.top + line.min;
             callback(span.info, span.lineOffset, base - span.layoutMin, span.layoutWidth, span.layoutMin + span.layoutMax);
         },
 
         withLine: function(textIndex, textIndexGetter, callback) {
-            var span = spans[binarySearch(textIndex, 0, spans.length - 1, function(i) { return textIndexGetter(spans[i].info) })];
+            var span = spans[binarySearch(textIndex, 0, spans.length - 1, function(i) { return textIndexGetter(spans[i].info); })];
             var line = lines[span.line];
             callback(line.top, line.height);
         },
 
         withSpanByLocation: function(x, y, callback) {
-            var line = lines[binarySearch(y, 0, lines.length - 1, function(i) { return lines[i].top })];
-            var span = spans[binarySearch(x, line.firstSpan, line.lastSpan, function(i) { return spans[i].lineOffset })];
+            var line = lines[binarySearch(y, 0, lines.length - 1, function(i) { return lines[i].top; })];
+            var span = spans[binarySearch(x, line.firstSpan, line.lastSpan, function(i) { return spans[i].lineOffset; })];
             var base = line.top + line.min;
             callback(span.info, span.lineOffset, base - span.layoutMin, span.layoutWidth, span.layoutMin + span.layoutMax);
         }
     };
-}
+};

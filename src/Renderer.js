@@ -8,7 +8,7 @@ function createCache() {
     return {
         put: function(code, createCallback) {
             var instance = previousPass[code];
-            if(instance != null) {
+            if(instance !== null) {
                 // claim instance as used
                 delete previousPass[code];
             } else {
@@ -38,7 +38,7 @@ function createCache() {
             previousPass = currentPass;
             currentPass = {};
         }
-    }
+    };
 }
 
 function initRenderer(outerContainer, container) {
@@ -91,7 +91,7 @@ function initRenderer(outerContainer, container) {
                 // TODO: reuse same closure instance?
                 lightCache.put(left + '|' + top, function() {
                     var dom = lightCache.freeNodes.length > 0 ? lightCache.freeNodes.pop() : null;
-                    if(dom == null) {
+                    if(dom === null) {
                         dom = $('<div></div>').appendTo(spanContainer);
                         dom.css(style.css).css({ display: 'block', position: 'absolute' });
                         dom.text(spanText);
@@ -127,7 +127,7 @@ function initRenderer(outerContainer, container) {
         }
 
         // render cursor if applicable
-        if(isFocused && cursorIndex != null) {
+        if(isFocused && cursorIndex !== null) {
             layout.withTextIndex(cursorIndex, function(left, top, height) {
                 cursor.stop(true).show().css({
                     left: left,
@@ -163,7 +163,7 @@ function initRenderer(outerContainer, container) {
 
             displayCodeParts[0] = isFocused ? '1' : '';
 
-            if(selStart != null && selEnd != null) {
+            if(selStart !== null && selEnd !== null) {
                 layout.eachRangeSpan(selStart, selEnd, function(x, y, w, h) {
                     displayCodeParts[1] = x;
                     displayCodeParts[2] = y;
@@ -194,7 +194,7 @@ function initRenderer(outerContainer, container) {
             });
         }
 
-        if(interestTop != null) {
+        if(interestTop !== null) {
             // NOTE: not using innerHeight to preserve padding
             var scrollTop = outerContainer.scrollTop();
             var scrollBottom = scrollTop + outerContainer.height();
@@ -204,7 +204,7 @@ function initRenderer(outerContainer, container) {
             else if(interestBottom > scrollBottom)
                 outerContainer.scrollTop(scrollTop + (interestBottom - scrollBottom));
         }
-    }
+    };
 }
 
 module.exports = initRenderer;

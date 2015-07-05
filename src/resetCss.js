@@ -7,4 +7,4 @@ module.exports = {
     '-webkit-user-select': 'none',
     '-o-user-select': 'none',
     'user-select': 'none'
-}
+};

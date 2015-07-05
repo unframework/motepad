@@ -115,7 +115,7 @@ function initInput(outerContainer, container, undo, redo, inputHandler) {
                 // "c" or "x"
                 // TODO: add more hooks to do this, or just always seed input area
                 var txt = inputHandler("copyHtml");
-                if(txt != null) {
+                if(txt !== null) {
                     if(k == 88)
                         inputHandler("delete", false); // simple deletion
 

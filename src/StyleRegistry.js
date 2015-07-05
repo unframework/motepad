@@ -19,17 +19,17 @@ StyleRegistry.prototype.getOrCreate = function(values) {
 
     var code = codeParts.join(separator);
 
-    if(this[code] == null)
+    if(this[code] === null)
         this[code] = createStyle(this.extentsStageContainer, css, code);
 
     return this[code];
-}
+};
 
 StyleRegistry.prototype.each = function(cb) {
     for(var n in this) {
         if(n.charAt(0) === separator)
             cb(this[n]);
     }
-}
+};
 
 module.exports = StyleRegistry;

@@ -22,11 +22,11 @@ $.fn.richText = function(command, arg) {
 
     var commands = parent.data(richTextDataId);
 
-    if(commands == null) {
+    if(commands === null) {
         commands = init(parent);
         parent.data(richTextDataId, commands);
     }
-}
+};
 
 /*
 createAttributeSequence().insert('test', 0, 11).insert('test', 1, 9).insert('test2', 5, 10).set('test', 5, 10).eachRun(0, 30, function(v, s, len) {
@@ -38,9 +38,9 @@ var attributeInfo = {
     /*
     link: {
         defaultValue: null,
-        getHashCode: function(v) { return v != null ? '1' : '' },
+        getHashCode: function(v) { return v !== null ? '1' : '' },
         applyVisual: function(v, css) {
-            if(v != null) {
+            if(v !== null) {
                 css['color'] = '#00f';
                 css['border-bottom'] = '1px solid #00f';
             }
@@ -56,27 +56,27 @@ var attributeInfo = {
     */
     bold: {
         defaultValue: false,
-        getHashCode: function(v) { return v ? '1' : '' },
-        applyVisual: function(v, css) { css['font-weight'] = v ? 'bold' : 'normal' },
+        getHashCode: function(v) { return v ? '1' : ''; },
+        applyVisual: function(v, css) { css['font-weight'] = v ? 'bold' : 'normal'; },
         parseHtmlTag: function(tag, styleAttrs) {
             if(tag == 'b' || tag == 'strong' || styleAttrs['font-weight'] == 'bold')
                 return true;
         },
-        openHtmlTag: function(v) { return (v ? '<b>' : '') },
-        closeHtmlTag: function(v) { return (v ? '</b>' : '') }
+        openHtmlTag: function(v) { return (v ? '<b>' : ''); },
+        closeHtmlTag: function(v) { return (v ? '</b>' : ''); }
     },
     italic: {
         defaultValue: false,
-        getHashCode: function(v) { return v ? '1' : '' },
-        applyVisual: function(v, css) { css['font-style'] = v ? 'italic' : 'normal' },
+        getHashCode: function(v) { return v ? '1' : ''; },
+        applyVisual: function(v, css) { css['font-style'] = v ? 'italic' : 'normal'; },
         parseHtmlTag: function(tag, styleAttrs) {
             if(tag == 'i' || tag == 'em' || styleAttrs['font-style'] == 'italic')
                 return true;
         },
-        openHtmlTag: function(v) { return (v ? '<i>' : '') },
-        closeHtmlTag: function(v) { return (v ? '</i>' : '') }
+        openHtmlTag: function(v) { return (v ? '<i>' : ''); },
+        closeHtmlTag: function(v) { return (v ? '</i>' : ''); }
     }
-}
+};
 
 function init(parent) {
     var outerContainer = $('<div></div>').addClass('editArea').insertAfter(parent).css({
@@ -110,7 +110,7 @@ function init(parent) {
 
     function getAttributeValues(name, index, length) {
         var values = [];
-        attributes[name].eachRun(index, length, function(v) { values.push(v) });
+        attributes[name].eachRun(index, length, function(v) { values.push(v); });
         return values;
     }
 
@@ -199,11 +199,11 @@ function init(parent) {
                 }
 
                 var attrs = {};
-                $.each(attrList, function(i, a) { attrs[a.name] = a.value });
+                $.each(attrList, function(i, a) { attrs[a.name] = a.value; });
 
                 var style = attrs.style;
                 var styleAttrs = {};
-                $.each((style == null ? '' : style).split(';'), function(i, s) {
+                $.each((style === null ? '' : style).split(';'), function(i, s) {
                     var p = s.split(':');
                     if(p.length == 2)
                         styleAttrs[$.trim(p[0])] = $.trim(p[1]);
@@ -216,7 +216,7 @@ function init(parent) {
                 // start new runs
                 for(var n in attributeInfo) {
                     var v = attributeInfo[n].parseHtmlTag(tag, styleAttrs, attrs);
-                    if(v != null) {
+                    if(v !== null) {
                         startRun(n, v);
                         level.push(n);
                     }
@@ -224,7 +224,7 @@ function init(parent) {
             },
             end: function(tag) {
                 // close this stack level's runs
-                $.each(stack.pop(), function(i, attr) { startRun(attr, attributeInfo[attr].defaultValue) });
+                $.each(stack.pop(), function(i, attr) { startRun(attr, attributeInfo[attr].defaultValue); });
 
                 // when block elements close, add double-newline
                 // TODO: support other block elements?
@@ -253,14 +253,14 @@ function init(parent) {
 
             attributes[n].eachRun(start, length, function(v, vs, vlen) {
                 // if range starts before current slice, subdivide previous slice
-                if(slice == null || slices[sliceIndex].start > vs) {
+                if(slice === null || slices[sliceIndex].start > vs) {
                     slice = { start: vs, values: $.extend({}, slices[sliceIndex - 1].values) };
                     slices.splice(sliceIndex, 0, slice);
                 }
 
                 // fill this and the rest of the slices within range
                 var vend = vs + vlen;
-                while(slice != null && slice.start < vend) {
+                while(slice !== null && slice.start < vend) {
                     slice.values[n] = v;
 
                     sliceIndex++;
@@ -295,7 +295,7 @@ function init(parent) {
         var lastStart = null;
 
         $.each(slices, function(i, slice) {
-            if(i == 0) {
+            if(i === 0) {
                 // start all the tags
                 for(var n in attributeInfo) {
                     var nv = slice.values[n];
@@ -357,7 +357,7 @@ function init(parent) {
             if(text.length > 0) {
                 var activeIndex = cursorIndex > 0 ? cursorIndex - 1 : cursorIndex;
                 for(var n in attributes)
-                    attributes[n].eachRun(activeIndex, 1, function(v) { values[n] = v });
+                    attributes[n].eachRun(activeIndex, 1, function(v) { values[n] = v; });
             } else {
                 for(var n in attributeInfo)
                     values[n] = attributeInfo[n].defaultValue;
@@ -374,7 +374,7 @@ function init(parent) {
                 cursorMode(layout, isFocused, ni);
             } else if(input == "line") {
                 var offset = intendedOffset;
-                if(offset == null)
+                if(offset === null)
                     layout.withTextIndex(cursorIndex, function(left) { offset = left; });
 
                 var edge = 0;
@@ -413,7 +413,7 @@ function init(parent) {
             } else if(input == "insert") {
                 undoable(function() {
 
-                    var values = entryAttributes == null ? currentAttributes() : entryAttributes;
+                    var values = entryAttributes === null ? currentAttributes() : entryAttributes;
 
                     text = text.substring(0, cursorIndex) + arg + text.substring(cursorIndex);
                     for(var n in attributes)
@@ -432,7 +432,7 @@ function init(parent) {
                     cursorMode(newLayout, isFocused, text.length - distanceFromEnd);
                 });
             } else if(input == "styleModifier") {
-                var nm = entryAttributes == null ? currentAttributes() : $.extend({}, entryAttributes);
+                var nm = entryAttributes === null ? currentAttributes() : $.extend({}, entryAttributes);
                 if(arg == 'bold' || arg == 'italic')
                     nm[arg] = !nm[arg];
                 cursorMode(layout, isFocused, cursorIndex, null, nm);
@@ -489,7 +489,7 @@ function init(parent) {
                 selectedMode(layout, isFocused, startIndex, ni);
             } else if(input == "lineSelect") {
                 var offset = intendedOffset;
-                if(offset == null)
+                if(offset === null)
                     layout.withTextIndex(endIndex, function(left) { offset = left; });
 
                 var edge = 0;
@@ -567,7 +567,7 @@ function init(parent) {
 
     undoable(function() {
         var initial = parent.val();
-        if(initial != null)
+        if(initial !== null)
             inputHandler('pasteHtml', initial);
     });
 

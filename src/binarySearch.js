@@ -16,4 +16,4 @@ module.exports = function binarySearch(value, first, last, getter) {
     }
 
     return last;
-}
+};

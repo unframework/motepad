@@ -22,7 +22,7 @@ module.exports = function layoutRichText(areaWidth, text, attributes, attributeI
             var textLength = leftover;
             for(var n in consumers) {
                 // TODO: this check should not be necessary
-                if(consumers[n].runLength == null)
+                if(consumers[n].runLength === null)
                     throw "consumer overrun!";
 
                 textLength = Math.min(textLength, consumers[n].runLength);
@@ -41,7 +41,7 @@ module.exports = function layoutRichText(areaWidth, text, attributes, attributeI
     }, defaultStyle);
 
     // free up style cache memory
-    styles.each(function(style) { style.cleanCache() });
+    styles.each(function(style) { style.cleanCache(); });
 
     return result;
-}
+};

@@ -26,12 +26,12 @@ function createStyle(stageContainer, extraCss, hashCode) {
 
         computeWidth: function(text) {
             var result = nextWidthCache[text];
-            if(result != null)
+            if(result !== null)
                 return result;
 
             // get width value from prior pass, or compute it
             result = prevWidthCache[text];
-            if(result == null) {
+            if(result === null) {
                 // NOTE: newlines still need to return normal space width
                 stage.text(text == "\n" ? " " : text);
                 result = stage.width();
@@ -52,7 +52,7 @@ function createStyle(stageContainer, extraCss, hashCode) {
 
             computeCount = 0;
         }
-    }
+    };
 }
 
 module.exports = createStyle;
