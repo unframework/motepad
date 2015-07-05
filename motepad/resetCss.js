@@ -1,9 +1,5 @@
-define(
-    [],
-    function() {
-
         // TODO: IE unselectable
-        return {
+        module.exports = {
             padding: 0, border: 'none', margin: 0,
             font: 'inherit', cursor: 'inherit',
             '-moz-user-select': '-moz-none',
@@ -12,6 +8,3 @@ define(
             '-o-user-select': 'none',
             'user-select': 'none'
         }
-
-    }
-)

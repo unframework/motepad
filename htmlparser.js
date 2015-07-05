@@ -191,4 +191,4 @@
 			obj[ items[i] ] = true;
 		return obj;
 	}
-})();
+}).call(module.exports);

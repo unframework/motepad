@@ -1,6 +1,5 @@
-define(
-    [ 'motepad/binarySearch', 'motepad/layoutBlock' ],
-    function(binarySearch, layoutBlock) {
+var binarySearch = require('./binarySearch');
+var layoutBlock = require('./layoutBlock');
 
         function tokenize(text, cb) {
             var rem = text;
@@ -18,7 +17,7 @@ define(
             }
         }
 
-        return function layoutMetaText(maxWidth, text, metaBlockCallback, defaultStyle) {
+        module.exports = function layoutMetaText(maxWidth, text, metaBlockCallback, defaultStyle) {
             var layout = layoutBlock(maxWidth, function(addInlineBlock, addWordBreak) {
                 var processed = 0;
                 var lastStyle = defaultStyle;
@@ -124,6 +123,3 @@ define(
                 }
             }
         }
-
-    }
-)

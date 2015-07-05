@@ -1,8 +1,7 @@
-define(
-    [ 'jQuery', 'motepad/binarySearch' ],
-    function($, binarySearch) {
+var $ = require('jquery');
+var binarySearch = require('./binarySearch');
 
-        return function layoutBlock(maxWidth, run) {
+        module.exports = function layoutBlock(maxWidth, run) {
             var lines = [];
             var spans = [];
 
@@ -113,6 +112,3 @@ define(
                 }
             };
         }
-
-    }
-)

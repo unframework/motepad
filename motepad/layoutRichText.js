@@ -1,8 +1,8 @@
-define(
-    [ 'motepad/binarySearch', 'motepad/layoutBlock', 'motepad/layoutMetaText' ],
-    function(binarySearch, layoutBlock, layoutMetaText) {
+var binarySearch = require('./binarySearch');
+var layoutBlock = require('./layoutBlock');
+var layoutMetaText = require('./layoutMetaText');
 
-        return function layoutRichText(areaWidth, text, attributes, attributeInfo, styles) {
+        module.exports = function layoutRichText(areaWidth, text, attributes, attributeInfo, styles) {
             var currentValues = {};
             for(var n in attributeInfo)
                 currentValues[n] = attributeInfo[n].defaultValue;
@@ -45,6 +45,3 @@ define(
 
             return result;
         }
-
-    }
-)

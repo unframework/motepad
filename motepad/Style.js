@@ -1,6 +1,4 @@
-define(
-    [ 'jQuery' ],
-    function($) {
+var $ = require('jquery');
 
         function createStyle(stageContainer, extraCss, hashCode) {
             var fullCss = $.extend({
@@ -57,7 +55,4 @@ define(
             }
         }
 
-        return createStyle;
-
-    }
-)
+        module.exports = createStyle;

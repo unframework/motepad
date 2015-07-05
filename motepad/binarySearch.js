@@ -1,8 +1,4 @@
-define(
-    [],
-    function() {
-
-        return function binarySearch(value, first, last, getter) {
+        module.exports = function binarySearch(value, first, last, getter) {
             var count = 0;
             while(first < last) {
                 var midLine = first + Math.ceil((last - first) / 2);
@@ -21,6 +17,3 @@ define(
 
             return last;
         }
-
-    }
-)

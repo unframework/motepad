@@ -3,29 +3,15 @@
  * Dual-licensed under the MIT or GPL Version 2 licenses.
  */
 
-define(
-    [
-        'jQuery',
-        'htmlparser',
-        'motepad/resetCss',
-        'motepad/AttributeSequence',
-        'motepad/Style',
-        'motepad/StyleRegistry',
-        'motepad/Renderer',
-        'motepad/Input',
-        'motepad/layoutRichText'
-    ],
-    function(
-        $,
-        HTMLParser,
-        resetMetricsCss,
-        createAttributeSequence,
-        createStyle,
-        StyleRegistry,
-        initRenderer,
-        initInput,
-        layoutRichText
-    ) {
+var $ = require('jquery');
+var HTMLParser = require('./htmlparser').HTMLParser;
+var resetMetricsCss = require('./motepad/resetCss');
+var createAttributeSequence = require('./motepad/AttributeSequence');
+var createStyle = require('./motepad/Style');
+var StyleRegistry = require('./motepad/StyleRegistry');
+var initRenderer = require('./motepad/Renderer');
+var initInput = require('./motepad/Input');
+var layoutRichText = require('./motepad/layoutRichText');
 
         var richTextDataId = 'richText_ba4c44091e9a88f061d31dab36cb7e20';
 
@@ -590,9 +576,3 @@ define(
 
             };
         }
-
-        $(function() {
-            $('#testInput').richText();
-        });
-    }
-)

@@ -1,6 +1,4 @@
-define(
-    [ 'motepad/Style' ],
-    function(createStyle) {
+var createStyle = require('./Style');
 
         var separator = "\u0001";
 
@@ -34,7 +32,4 @@ define(
             }
         }
 
-        return StyleRegistry;
-
-    }
-)
+        module.exports = StyleRegistry;

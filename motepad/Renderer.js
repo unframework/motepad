@@ -1,6 +1,5 @@
-define(
-    [ 'jQuery', 'motepad/resetCss' ],
-    function($, resetMetricsCss) {
+var $ = require('jquery');
+var resetMetricsCss = require('./resetCss');
 
         // reusable pass-based caching logic
         function createCache() {
@@ -208,7 +207,4 @@ define(
             }
         }
 
-        return initRenderer;
-
-    }
-)
+        module.exports = initRenderer;

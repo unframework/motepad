@@ -1,6 +1,5 @@
-define(
-    [ 'jQuery', 'motepad/resetCss' ],
-    function($, resetMetricsCss) {
+var $ = require('jquery');
+var resetMetricsCss = require('./resetCss');
 
         function initInput(outerContainer, container, undo, redo, inputHandler) {
             // mouse handlers
@@ -155,7 +154,4 @@ define(
             });
         }
 
-        return initInput;
-
-    }
-)
+        module.exports = initInput;

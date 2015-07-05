@@ -1,6 +1,5 @@
-define(
-    [ 'jQuery' ],
-    function($) {
+var $ = require('jquery');
+
         function createAttributeSequenceImpl(runs) {
             function eachRun(callback) {
                 var start = 0;
@@ -10,12 +9,12 @@ define(
                     return r;
                 });
             }
-        
+
             var self = {
                 insert: function(value, start, length) {
                     var newRuns = [];
                     var hit = false;
-        
+
                     // TODO: merge similar runs
                     eachRun(function(i, run, runStart) {
                         if(runStart + run.length <= start) {
@@ -28,7 +27,7 @@ define(
                                 // split the old run in two
                                 var lenA = start - runStart;
                                 var lenB = runStart + run.length - start;
-        
+
                                 if(lenA > 0) {
                                     newRuns.push({ value: run.value, length: lenA });
                                 } else {
@@ -41,20 +40,20 @@ define(
                                         }
                                     }
                                 }
-        
+
                                 newRuns.push({ value: value, length: length });
                                 newRuns.push({ value: run.value, length: lenB });
                             }
-        
+
                             // copy the rest of the runs
                             newRuns = newRuns.concat(runs.slice(i + 1));
-        
+
                             // break out of the loop
                             hit = true;
                             return false;
                         }
                     });
-                    
+
                     if(!hit) {
                         // the new run comes in contact with previous run
                         if(newRuns.length > 0) {
@@ -64,20 +63,20 @@ define(
                                 newRuns.pop(); // remove the last run (it is unmodifiable)
                             }
                         }
-        
+
                         newRuns.push({ value: value, length: length });
                     }
-        
+
                     return createAttributeSequenceImpl(newRuns);
                 },
-        
+
                 insertAll: function(all, start) {
                     var newRuns = [];
                     var hit = false;
-        
+
                     var added = null;
                     var remainder = null;
-        
+
                     // TODO: merge similar runs
                     eachRun(function(i, run, runStart) {
                         if(runStart + run.length <= start) {
@@ -86,30 +85,30 @@ define(
                             // split the old run in two
                             var lenA = start - runStart;
                             var lenB = runStart + run.length - start;
-        
+
                             added = [ { value: run.value, length: lenA }].concat(all);
                             added.push({ value: run.value, length: lenB });
-        
+
                             remainder = runs.slice(i + 1);
-        
+
                             // break out of the loop
                             return false;
                         }
                     });
-        
+
                     // if no match above, it is a simple append
                     if(added == null) {
                         added = all;
                         remainder = [];
                     }
-        
+
                     var mergeRun = null;
-        
+
                     $.each(added, function(i, add) {
                         // skip empty runs
                         if(add.length < 1)
                             return;
-        
+
                         if(mergeRun != null) {
                             if(mergeRun.value == add.value) {
                                 mergeRun.length += add.length;
@@ -126,24 +125,24 @@ define(
                                     newRuns.pop(); // remove the unmodifiable run
                                 }
                             }
-        
+
                             newRuns.push(add);
                         }
                     });
-        
+
                     // copy the rest of the runs
                     // NOTE: no need to merge with remaining runs (slice B of this run is always non-empty)
                     newRuns = newRuns.concat(remainder);
-        
+
                     return createAttributeSequenceImpl(newRuns);
                 },
-        
+
                 remove: function(start, length) {
                     var end = start + length;
                     var newRuns = [];
-        
+
                     var mergeRun = null;
-        
+
                     // TODO: merge similar runs
                     eachRun(function(i, run, runStart) {
                         if(runStart + run.length <= start) {
@@ -154,7 +153,7 @@ define(
                                 mergeRun = { value: run.value, length: start - runStart };
                                 newRuns.push(mergeRun);
                             }
-        
+
                             if(runStart + run.length >= end) {
                                 // keep the ending segment
                                 var len = runStart + run.length - end;
@@ -176,7 +175,7 @@ define(
                                                 newRuns.pop(); // remove the last run (it is unmodifiable)
                                             }
                                         }
-        
+
                                         mergeRun = { value: run.value, length: len };
                                         newRuns.push(mergeRun);
                                     }
@@ -184,7 +183,7 @@ define(
                             }
                         } else {
                             var mergeDone = false;
-        
+
                             // no need to merge with leftover segments
                             if(mergeRun == null) {
                                 // potential merge with last run
@@ -197,28 +196,28 @@ define(
                                     }
                                 }
                             }
-        
+
                             // if no merge, just reuse current run
                             if(!mergeDone)
                                 newRuns.push(run);
-        
+
                             // copy over the remainder
                             newRuns = newRuns.concat(runs.slice(i + 1));
-        
+
                             // break out of the loop
                             return false;
                         }
                     });
-        
+
                     return createAttributeSequenceImpl(newRuns);
                 },
-        
+
                 set: function(value, start, length) {
                     var end = start + length;
                     var newRuns = [];
-        
+
                     var mergeRun = null;
-        
+
                     eachRun(function(i, run, runStart) {
                         if(runStart + run.length <= start) {
                             newRuns.push(run);
@@ -228,7 +227,7 @@ define(
                                 mergeRun = { value: run.value, length: start - runStart };
                                 newRuns.push(mergeRun);
                             }
-        
+
                             if(runStart <= start) {
                                 if(mergeRun != null) {
                                     // try to merge with starting segment
@@ -247,22 +246,22 @@ define(
                                             newRuns.pop(); // remove the last run (it is unmodifiable)
                                         }
                                     }
-        
+
                                     mergeRun = { value: value, length: length };
                                     newRuns.push(mergeRun);
                                 }
                             }
-        
+
                             // keep the ending segment
                             if(runStart + run.length > end) {
                                 var len = runStart + run.length - end;
-        
+
                                 if(mergeRun.value == run.value) {
                                     mergeRun.length += len;
                                 } else {
                                     newRuns.push({ value: run.value, length: len });
                                 }
-        
+
                                 // non-empty ending segment precludes further merges
                                 mergeRun = null;
                             }
@@ -272,21 +271,21 @@ define(
                             } else {
                                 newRuns.push(run);
                             }
-                            
+
                             // copy over the remainder
                             newRuns = newRuns.concat(runs.slice(i + 1));
-        
+
                             // break out of the loop
                             return false;
                         }
                     });
-        
+
                     return createAttributeSequenceImpl(newRuns);
                 },
-        
+
                 eachRun: function(start, length, callback) {
                     var end = start + length;
-        
+
                     eachRun(function(i, run, runStart) {
                         if(runStart + run.length <= start) {
                             // ignore this run
@@ -295,18 +294,18 @@ define(
                             var sliceEnd = Math.min(end, runStart + run.length);
                             var sliceLength = sliceEnd - sliceStart;
                             callback(run.value, sliceStart, sliceLength);
-                            
+
                             // when this run is touching range end, ignore the rest of the runs
                             if(runStart + run.length >= end)
                                 return false;
                         }
                     });
                 },
-        
+
                 createConsumer: function() {
                     var currentRun = 0;
                     var currentRunLength = runs.length > 0 ? runs[0].length : null;
-        
+
                     var consumer = {
                         runLength: currentRunLength,
                         runValue: runs.length > 0 ? runs[0].value : null,
@@ -314,10 +313,10 @@ define(
                             currentRunLength -= len;
                             if(currentRunLength < 0)
                                 throw "cannot consume past current run length";
-        
+
                             if(currentRunLength == 0) {
                                 currentRun++;
-        
+
                                 if(currentRun >= runs.length) {
                                     currentRunLength = null;
                                     consumer.runValue = null;
@@ -326,21 +325,20 @@ define(
                                     consumer.runValue = runs[currentRun].value;
                                 }
                             }
-        
+
                             consumer.runLength = currentRunLength;
                         }
                     };
-        
+
                     return consumer;
                 }
             };
-        
+
             return self;
         }
-        
+
         // empty constructor
-        return function() {
+        module.exports = function() {
             return createAttributeSequenceImpl([]);
         }
-    }
-)
+
