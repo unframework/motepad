@@ -4,7 +4,7 @@
   "description": "Extensible rich text editor",
   "main": "index.js",
   "scripts": {
-    "test": "jshint index.js src"
+    "test": "jshint index.js src && tap test"
   },
   "repository": {
     "type": "git",
@@ -17,9 +17,10 @@
   },
   "homepage": "https://github.com/unframework/motepad",
   "dependencies": {
-    "jquery": "^2.1.4"
+    "jquery": "^1.9.1"
   },
   "devDependencies": {
-    "jshint": "^2.8.0"
+    "jshint": "^2.8.0",
+    "tap": "^1.3.1"
   }
 }

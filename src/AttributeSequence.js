@@ -1,9 +1,7 @@
-var $ = require('jquery');
-
 function createAttributeSequenceImpl(runs) {
     function eachRun(callback) {
         var start = 0;
-        $.each(runs, function(i, run) {
+        runs.forEach(function (run, i) {
             var r = callback(i, run, start);
             start += run.length;
             return r;
@@ -104,7 +102,7 @@ function createAttributeSequenceImpl(runs) {
 
             var mergeRun = null;
 
-            $.each(added, function(i, add) {
+            added.forEach(function (add, i) {
                 // skip empty runs
                 if(add.length < 1)
                     return;
