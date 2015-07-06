@@ -1,6 +1,6 @@
 var $ = require('jquery');
 var resetMetricsCss = require('./resetCss');
-var PassCache = require('./PassCache');
+var ObjectPool = require('./ObjectPool');
 
 function initRenderer(outerContainer, container) {
     // display element containers
@@ -27,10 +27,10 @@ function initRenderer(outerContainer, container) {
     var lastDrawnLayout = null;
     var lastDrawnSelectionId = '';
 
-    var domWordCache = new PassCache();
-    var domCache = new PassCache();
+    var domWordCache = new ObjectPool();
+    var domCache = new ObjectPool();
 
-    var selectionDomCache = new PassCache();
+    var selectionDomCache = new ObjectPool();
     var freeSelectionDomNodes = [];
 
     return function render(layout, isFocused, cursorIndex, selStart, selEnd) {
@@ -45,7 +45,7 @@ function initRenderer(outerContainer, container) {
                 // TODO: ignore the whitespace spans
                 var heavyCode = style.hashCode + '|' + spanText;
                 var lightCache = domWordCache.put(heavyCode, function() {
-                    var result = new PassCache();
+                    var result = new ObjectPool();
                     result.freeNodes = [];
                     return result;
                 });

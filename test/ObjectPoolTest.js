@@ -1,8 +1,8 @@
 var t = require('tap');
-var PassCache = require('../src/PassCache');
+var ObjectPool = require('../src/ObjectPool');
 
 t.test('simple operation', function (t) {
-    var cache = new PassCache();
+    var cache = new ObjectPool();
 
     cache.put('A', function () { t.ok('putting new key'); return 'X'; });
     cache.put('A', function () { t.fail('not needing to put in new key'); });

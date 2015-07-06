@@ -1,10 +1,10 @@
 
-function PassCache() {
+function ObjectPool() {
     this._previousPass = {};
     this._currentPass = {};
 }
 
-PassCache.prototype.put = function (code, createCallback) {
+ObjectPool.prototype.put = function (code, createCallback) {
     var currentInstance = this._currentPass[code];
     if (currentInstance !== undefined) {
         return currentInstance;
@@ -25,7 +25,7 @@ PassCache.prototype.put = function (code, createCallback) {
     return instance;
 };
 
-PassCache.prototype.each = function (callback) {
+ObjectPool.prototype.each = function (callback) {
     var n;
 
     for(n in this._currentPass)
@@ -35,7 +35,7 @@ PassCache.prototype.each = function (callback) {
         callback(this._previousPass[n]);
 };
 
-PassCache.prototype.removeUnused = function (disposeCallback) {
+ObjectPool.prototype.removeUnused = function (disposeCallback) {
     // claim unused instances
     for(var n in this._previousPass)
         disposeCallback(this._previousPass[n]);
@@ -45,4 +45,4 @@ PassCache.prototype.removeUnused = function (disposeCallback) {
     this._currentPass = {};
 };
 
-module.exports = PassCache;
+module.exports = ObjectPool;
