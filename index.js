@@ -201,11 +201,11 @@ function init(parent) {
                 }
 
                 var attrs = {};
-                $.each(attrList, function(i, a) { attrs[a.name] = a.value; });
+                attrList.forEach(function (a) { attrs[a.name] = a.value; });
 
                 var style = attrs.style;
                 var styleAttrs = {};
-                $.each((style === null ? '' : style).split(';'), function(i, s) {
+                (style === null ? '' : style).split(';').forEach(function (s) {
                     var p = s.split(':');
                     if(p.length === 2)
                         styleAttrs[$.trim(p[0])] = $.trim(p[1]);
@@ -226,7 +226,7 @@ function init(parent) {
             },
             end: function(tag) {
                 // close this stack level's runs
-                $.each(stack.pop(), function(i, attr) { startRun(attr, attributeInfo[attr].defaultValue); });
+                stack.pop().forEach(function (attr) { startRun(attr, attributeInfo[attr].defaultValue); });
 
                 // when block elements close, add double-newline
                 // TODO: support other block elements?
@@ -298,7 +298,7 @@ function init(parent) {
         var lastValues = {};
         var lastStart = null;
 
-        $.each(slices, function(index, slice) {
+        slices.forEach(function (slice, index) {
             var n, i, tn;
 
             if(index === 0) {
@@ -551,7 +551,7 @@ function init(parent) {
                         var newValue = false;
 
                         var av = getAttributeValues(arg, a, b - a);
-                        $.each(av, function(i, v) { if(!v) { newValue = true; return false; } });
+                        av.forEach(function (v) { if(!v) { newValue = true; return false; } });
 
                         attributes[arg] = attributes[arg].set(newValue, a, b - a);
 

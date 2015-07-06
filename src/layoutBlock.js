@@ -11,13 +11,13 @@ module.exports = function layoutBlock(maxWidth, run) {
 
     var commitLineSpans = function(lineSpans) {
         var min = 0, max = 0;
-        $.each(lineSpans, function(i, span) {
+        lineSpans.forEach(function (span) {
             min = Math.max(min, span.layoutMin);
             max = Math.max(max, span.layoutMax);
         });
 
         var x = 0;
-        $.each(lineSpans, function(i, span) {
+        lineSpans.forEach(function (span) {
             span.line = lines.length;
             span.lineOffset = x;
             x += span.layoutWidth;
@@ -84,7 +84,7 @@ module.exports = function layoutBlock(maxWidth, run) {
 
     return {
         eachSpan: function(callback) {
-            $.each(spans, function(i, span) {
+            spans.forEach(function (span) {
                 var line = lines[span.line];
                 var base = line.top + line.min;
                 callback(span.info, span.lineOffset, base - span.layoutMin, span.layoutWidth, span.layoutMin + span.layoutMax);
