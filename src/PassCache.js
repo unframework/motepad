@@ -5,6 +5,12 @@ function PassCache() {
 }
 
 PassCache.prototype.put = function (code, createCallback) {
+    var currentInstance = this._currentPass[code];
+    if (currentInstance !== undefined) {
+        return currentInstance;
+    }
+
+    // look for previous pass instance
     var instance = this._previousPass[code];
     if(instance !== undefined) {
         // claim instance as used
