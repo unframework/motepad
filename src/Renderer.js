@@ -1,47 +1,6 @@
 var $ = require('jquery');
 var resetMetricsCss = require('./resetCss');
-
-// reusable pass-based caching logic
-function createCache() {
-    var previousPass = {}, currentPass = {};
-
-    return {
-        put: function(code, createCallback) {
-            var instance = previousPass[code];
-            if(instance !== undefined) {
-                // claim instance as used
-                delete previousPass[code];
-            } else {
-                // create new instance
-                instance = createCallback();
-            }
-
-            // save for next pass
-            currentPass[code] = instance;
-            return instance;
-        },
-
-        each: function(callback) {
-            var n;
-
-            for(n in currentPass)
-                callback(currentPass[n]);
-
-            for(n in previousPass)
-                callback(previousPass[n]);
-        },
-
-        removeUnused: function(disposeCallback) {
-            // claim unused instances
-            for(var n in previousPass)
-                disposeCallback(previousPass[n]);
-
-            // flip storage for next pass
-            previousPass = currentPass;
-            currentPass = {};
-        }
-    };
-}
+var PassCache = require('./PassCache');
 
 function initRenderer(outerContainer, container) {
     // display element containers
@@ -68,10 +27,10 @@ function initRenderer(outerContainer, container) {
     var lastDrawnLayout = null;
     var lastDrawnSelectionId = '';
 
-    var domWordCache = createCache();
-    var domCache = createCache();
+    var domWordCache = new PassCache();
+    var domCache = new PassCache();
 
-    var selectionDomCache = createCache();
+    var selectionDomCache = new PassCache();
     var freeSelectionDomNodes = [];
 
     return function render(layout, isFocused, cursorIndex, selStart, selEnd) {
@@ -86,7 +45,7 @@ function initRenderer(outerContainer, container) {
                 // TODO: ignore the whitespace spans
                 var heavyCode = style.hashCode + '|' + spanText;
                 var lightCache = domWordCache.put(heavyCode, function() {
-                    var result = createCache();
+                    var result = new PassCache();
                     result.freeNodes = [];
                     return result;
                 });
