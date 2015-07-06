@@ -19,7 +19,7 @@ StyleRegistry.prototype.getOrCreate = function(values) {
 
     var code = codeParts.join(separator);
 
-    if(this[code] === null)
+    if(this[code] === undefined)
         this[code] = createStyle(this.extentsStageContainer, css, code);
 
     return this[code];

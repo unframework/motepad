@@ -8,7 +8,7 @@ function createCache() {
     return {
         put: function(code, createCallback) {
             var instance = previousPass[code];
-            if(instance !== null) {
+            if(instance !== undefined) {
                 // claim instance as used
                 delete previousPass[code];
             } else {
