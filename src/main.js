@@ -232,14 +232,14 @@ function init(parent) {
 
             attributes[n].eachRun(start, length, function(v, vs, vlen) {
                 // if range starts before current slice, subdivide previous slice
-                if(slice === null || slices[sliceIndex].start > vs) {
+                if(slice === undefined || slices[sliceIndex].start > vs) {
                     slice = { start: vs, values: $.extend({}, slices[sliceIndex - 1].values) };
                     slices.splice(sliceIndex, 0, slice);
                 }
 
                 // fill this and the rest of the slices within range
                 var vend = vs + vlen;
-                while(slice !== null && slice.start < vend) {
+                while(slice !== undefined && slice.start < vend) {
                     slice.values[n] = v;
 
                     sliceIndex++;
