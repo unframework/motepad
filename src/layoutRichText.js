@@ -1,5 +1,4 @@
 var binarySearch = require('./binarySearch');
-var layoutBlock = require('./layoutBlock');
 var layoutMetaText = require('./layoutMetaText');
 
 module.exports = function layoutRichText(areaWidth, text, attributes, attributeInfo, styles) {
@@ -44,6 +43,7 @@ module.exports = function layoutRichText(areaWidth, text, attributes, attributeI
     }, defaultStyle);
 
     // free up style cache memory
+    // @todo move elsewhere
     styles.each(function(style) { style.cleanCache(); });
 
     return result;

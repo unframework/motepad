@@ -51,7 +51,7 @@ module.exports = function layoutBlock(maxWidth, run) {
         // TODO: newlines, other zero-width stuff or whatever gets normalized into spaces/etc
 
         // before committing the word, insert line break if it would make the line too long
-        if(lineWidth > 0 && lineWidth + wordWidth > maxWidth) {
+        if (forceBreakAfter || (lineWidth > 0 && lineWidth + wordWidth > maxWidth)) {
             // when a space token straddles the end of line, we keep it there but still start new line
             if(isSpace || forceBreakAfter) {
                 lineSpans.push(wordSpans[0]); // TODO: double-check this

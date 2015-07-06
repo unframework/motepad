@@ -2,6 +2,7 @@ var $ = require('jquery');
 var resetMetricsCss = require('./resetCss');
 var ObjectPool = require('./ObjectPool');
 
+// @todo do not render clipped portions
 function initRenderer(outerContainer, container) {
     // display element containers
     var spanContainer = $('<div></div>').appendTo(container);
