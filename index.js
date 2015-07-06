@@ -22,7 +22,7 @@ $.fn.richText = function(command, arg) {
 
     var commands = parent.data(richTextDataId);
 
-    if(commands === null) {
+    if(commands === undefined) {
         commands = init(parent);
         parent.data(richTextDataId, commands);
     }
@@ -205,7 +205,7 @@ function init(parent) {
 
                 var style = attrs.style;
                 var styleAttrs = {};
-                (style === null ? '' : style).split(';').forEach(function (s) {
+                (style === undefined ? '' : style).split(';').forEach(function (s) {
                     var p = s.split(':');
                     if(p.length === 2)
                         styleAttrs[$.trim(p[0])] = $.trim(p[1]);
@@ -423,7 +423,7 @@ function init(parent) {
             } else if(input === "insert") {
                 undoable(function() {
 
-                    var values = entryAttributes === null ? currentAttributes() : entryAttributes;
+                    var values = entryAttributes === undefined ? currentAttributes() : entryAttributes;
 
                     text = text.substring(0, cursorIndex) + arg + text.substring(cursorIndex);
                     for(var n in attributes)
