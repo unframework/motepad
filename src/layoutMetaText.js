@@ -8,7 +8,7 @@ function tokenize(text, cb) {
         var match = /^(\s)|\S+/.exec(rem);
         var token = match[0];
 
-        var isSpace = (match[1] !== null);
+        var isSpace = (match[1] !== undefined);
         var forceBreak = token === "\n";
 
         cb(token, isSpace, forceBreak);
