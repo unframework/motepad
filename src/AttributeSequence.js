@@ -188,10 +188,10 @@ function createAttributeSequenceImpl(runs) {
                     if(mergeRun === null) {
                         // potential merge with last run
                         if(newRuns.length > 0) {
-                            var lastRun = newRuns[newRuns.length - 1];
-                            if(lastRun.value === run.value) {
+                            var lastRun2 = newRuns[newRuns.length - 1];
+                            if(lastRun2.value === run.value) {
                                 newRuns.pop(); // remove the last run (it is unmodifiable)
-                                newRuns.push({ value: run.value, length: run.length + lastRun.length });
+                                newRuns.push({ value: run.value, length: run.length + lastRun2.length });
                                 mergeDone = true;
                             }
                         }

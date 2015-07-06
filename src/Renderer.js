@@ -22,10 +22,12 @@ function createCache() {
         },
 
         each: function(callback) {
-            for(var n in currentPass)
+            var n;
+
+            for(n in currentPass)
                 callback(currentPass[n]);
 
-            for(var n in previousPass)
+            for(n in previousPass)
                 callback(previousPass[n]);
         },
 
@@ -73,11 +75,12 @@ function initRenderer(outerContainer, container) {
     var freeSelectionDomNodes = [];
 
     return function render(layout, isFocused, cursorIndex, selStart, selEnd) {
+        var displayCodeParts;
         var interestTop = null, interestBottom = null;
 
-        if(!(lastDrawnLayout === layout)) {
+        if(lastDrawnLayout !== layout) {
             var bottom = 0;
-            var displayCodeParts = [];
+            displayCodeParts = [];
 
             layout.eachTextSpan(function(style, spanText, left, top, width, height) {
                 // TODO: ignore the whitespace spans
@@ -154,7 +157,7 @@ function initRenderer(outerContainer, container) {
         if(selectionId !== lastDrawnSelectionId) {
             lastDrawnSelectionId = selectionId;
 
-            var displayCodeParts = [];
+            displayCodeParts = [];
             var boxCss = {
                 display: 'block',
                 position: 'absolute',

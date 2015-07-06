@@ -3,24 +3,27 @@ var layoutBlock = require('./layoutBlock');
 var layoutMetaText = require('./layoutMetaText');
 
 module.exports = function layoutRichText(areaWidth, text, attributes, attributeInfo, styles) {
+    var n;
+
     var currentValues = {};
-    for(var n in attributeInfo)
+    for(n in attributeInfo)
         currentValues[n] = attributeInfo[n].defaultValue;
 
     var defaultStyle = styles.getOrCreate(currentValues);
 
     var consumers = {};
-    for(var n in attributes) {
+    for(n in attributes) {
         consumers[n] = attributes[n].createConsumer();
     }
 
     var result = layoutMetaText(areaWidth, text, function(tokenLength, callback) {
+        var n;
         var leftover = tokenLength;
 
         while(leftover > 0) {
             // find maximum inline block length
             var textLength = leftover;
-            for(var n in consumers) {
+            for(n in consumers) {
                 // TODO: this check should not be necessary
                 if(consumers[n].runLength === null)
                     throw "consumer overrun!";
@@ -33,7 +36,7 @@ module.exports = function layoutRichText(areaWidth, text, attributes, attributeI
 
             callback(style, textLength);
 
-            for(var n in consumers)
+            for(n in consumers)
                 consumers[n].advance(textLength);
 
             leftover -= textLength;

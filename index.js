@@ -163,6 +163,8 @@ function init(parent) {
     }
 
     function insertHTML(start, html) {
+        var n;
+
         var newText = '';
         var newAttributes = {
         };
@@ -171,7 +173,7 @@ function init(parent) {
             newAttributes[name].push({ value: value, length: 0 });
         }
 
-        for(var n in attributeInfo) {
+        for(n in attributeInfo) {
             newAttributes[n] = [];
             startRun(n, attributeInfo[n].defaultValue);
         }
@@ -240,14 +242,16 @@ function init(parent) {
         });
 
         text = text.substring(0, start) + newText + text.substring(start);
-        for(var n in attributes)
+        for(n in attributes)
             attributes[n] = attributes[n].insertAll(newAttributes[n], start);
     }
 
     function toHTML(start, length) {
+        var n;
         var slices = [ { start: start, values: {} } ];
 
-        for(var n in attributes) {
+        for(n in attributes) {
+            /*jslint loopfunc: true */
             var sliceIndex = 0;
             var slice = slices[sliceIndex];
 
@@ -288,16 +292,18 @@ function init(parent) {
         }
 
         var tagOrder = [];
-        for(var n in attributeInfo)
+        for(n in attributeInfo)
             tagOrder.push(n);
 
         var lastValues = {};
         var lastStart = null;
 
-        $.each(slices, function(i, slice) {
-            if(i === 0) {
+        $.each(slices, function(index, slice) {
+            var n, i, tn;
+
+            if(index === 0) {
                 // start all the tags
-                for(var n in attributeInfo) {
+                for(n in attributeInfo) {
                     var nv = slice.values[n];
                     lastValues[n] = nv;
                     startTag(n, nv);
@@ -305,7 +311,7 @@ function init(parent) {
             } else {
                 // determine how deeply to unwind the current tags
                 var sameLevel = -1;
-                for(var n in attributeInfo) {
+                for(n in attributeInfo) {
                     if(slice.values[n] !== lastValues[n])
                         break;
 
@@ -317,14 +323,14 @@ function init(parent) {
                 appendText(text.substring(lastStart, slice.start));
 
                 // end last attribute values
-                for(var i = tagOrder.length - 1; i > sameLevel; i--) {
-                    var tn = tagOrder[i];
+                for(i = tagOrder.length - 1; i > sameLevel; i--) {
+                    tn = tagOrder[i];
                     endTag(tn, lastValues[tn]);
                 }
 
                 // start new attribute values
-                for(var i = sameLevel + 1; i < tagOrder.length; i++) {
-                    var tn = tagOrder[i];
+                for(i = sameLevel + 1; i < tagOrder.length; i++) {
+                    tn = tagOrder[i];
                     startTag(tn, lastValues[tn] = slice.values[tn]);
                 }
             }
@@ -352,14 +358,16 @@ function init(parent) {
         render(layout, isFocused, cursorIndex);
 
         function currentAttributes() {
+            var n;
             var values = {};
 
             if(text.length > 0) {
+                /*jslint loopfunc: true */
                 var activeIndex = cursorIndex > 0 ? cursorIndex - 1 : cursorIndex;
-                for(var n in attributes)
+                for(n in attributes)
                     attributes[n].eachRun(activeIndex, 1, function(v) { values[n] = v; });
             } else {
-                for(var n in attributeInfo)
+                for(n in attributeInfo)
                     values[n] = attributeInfo[n].defaultValue;
             }
 
@@ -367,9 +375,11 @@ function init(parent) {
         }
 
         inputHandler = function(input, arg) {
+            var ni, edge;
+
             if(input === "character") {
                 var delta = (arg > 0 ? 1 : -1);
-                var ni = Math.max(0, Math.min(text.length, cursorIndex + delta));
+                ni = Math.max(0, Math.min(text.length, cursorIndex + delta));
 
                 cursorMode(layout, isFocused, ni);
             } else if(input === "line") {
@@ -377,16 +387,16 @@ function init(parent) {
                 if(offset === null)
                     layout.withTextIndex(cursorIndex, function(left) { offset = left; });
 
-                var edge = 0;
+                edge = 0;
                 layout.withTextLine(cursorIndex, function(top, height) { edge = arg < 0 ? top - 1 : top + height + 1; });
-                var ni = layout.findTextIndex(offset, edge);
+                ni = layout.findTextIndex(offset, edge);
 
                 cursorMode(layout, isFocused, ni, offset);
             } else if(input === "inLine") {
                 var newOffset = arg < 0 ? -1 : Number.POSITIVE_INFINITY;
-                var edge = 0;
+                edge = 0;
                 layout.withTextLine(cursorIndex, function(top, height) { edge = top; });
-                var ni = layout.findTextIndex(newOffset, edge);
+                ni = layout.findTextIndex(newOffset, edge);
 
                 cursorMode(layout, isFocused, ni, newOffset);
             } else if(input === "characterSelect" || input === "lineSelect" || input === "inLineSelect") {
@@ -394,7 +404,7 @@ function init(parent) {
                 selectedMode(layout, isFocused, cursorIndex, cursorIndex);
                 inputHandler(input, arg);
             } else if(input === "mouseDown") {
-                var ni = layout.findTextIndex(arg.x, arg.y);
+                ni = layout.findTextIndex(arg.x, arg.y);
                 draggingMode(layout, ni, ni);
             } else if(input === "delete") {
                 var delIndex = arg ? cursorIndex - 1 : cursorIndex;
@@ -454,11 +464,13 @@ function init(parent) {
         render(layout, true, endIndex, startIndex, endIndex);
 
         inputHandler = function(input, arg) {
+            var ni;
+
             if(input === "mouseMove") {
-                var ni = layout.findTextIndex(arg.x, arg.y);
+                ni = layout.findTextIndex(arg.x, arg.y);
                 draggingMode(layout, startIndex, ni);
             } else if(input === "mouseUp") {
-                var ni = layout.findTextIndex(arg.x, arg.y);
+                ni = layout.findTextIndex(arg.x, arg.y);
                 if(ni === startIndex)
                     cursorMode(layout, true, ni);
                 else
@@ -479,12 +491,14 @@ function init(parent) {
 
         // TODO: keep checking that the selection is non-empty
         inputHandler = function(input, arg) {
+            var ni, edge;
+
             if(input === "mouseDown") {
-                var ni = layout.findTextIndex(arg.x, arg.y);
+                ni = layout.findTextIndex(arg.x, arg.y);
                 draggingMode(layout, ni, ni);
             } else if(input === "characterSelect") {
                 var delta = (arg > 0 ? 1 : -1);
-                var ni = Math.max(0, Math.min(text.length, endIndex + delta));
+                ni = Math.max(0, Math.min(text.length, endIndex + delta));
 
                 selectedMode(layout, isFocused, startIndex, ni);
             } else if(input === "lineSelect") {
@@ -492,16 +506,16 @@ function init(parent) {
                 if(offset === null)
                     layout.withTextIndex(endIndex, function(left) { offset = left; });
 
-                var edge = 0;
+                edge = 0;
                 layout.withTextLine(endIndex, function(top, height) { edge = arg < 0 ? top - 1 : top + height + 1; });
-                var ni = layout.findTextIndex(offset, edge);
+                ni = layout.findTextIndex(offset, edge);
 
                 selectedMode(layout, isFocused, startIndex, ni, offset);
             } else if(input === "inLineSelect") {
                 var newOffset = arg < 0 ? -1 : Number.POSITIVE_INFINITY;
-                var edge = 0;
+                edge = 0;
                 layout.withTextLine(endIndex, function(top, height) { edge = top; });
-                var ni = layout.findTextIndex(newOffset, edge);
+                ni = layout.findTextIndex(newOffset, edge);
 
                 selectedMode(layout, isFocused, startIndex, ni, newOffset);
             } else if(input === "character" || input === "line" || input === "inLine") {
@@ -551,9 +565,9 @@ function init(parent) {
                 var b = Math.max(startIndex, endIndex);
                 return toHTML(a, b - a);
             } else if(input === "activeAttributeValues") {
-                var a = Math.min(startIndex, endIndex);
-                var b = Math.max(startIndex, endIndex);
-                return getAttributeValues(arg, a, b - a);
+                var a2 = Math.min(startIndex, endIndex);
+                var b2 = Math.max(startIndex, endIndex);
+                return getAttributeValues(arg, a2, b2 - a2);
             } else if(input === "refresh") {
                 selectedMode(layout, isFocused, startIndex, endIndex);
             } else if(input === "focusUpdate") {
