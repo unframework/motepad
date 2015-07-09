@@ -25,6 +25,13 @@ function initRenderer(outerContainer, container) {
         left: 0, top: 0
     });
 
+    function createTextSpan(spanText, css) {
+        var dom = $('<div></div>').appendTo(spanContainer);
+        dom.css(css).css({ display: 'block', position: 'absolute' });
+        dom.text(spanText);
+        return dom;
+    }
+
     var lastDrawnLayout = null;
     var lastDrawnSelectionId = '';
 
@@ -53,14 +60,9 @@ function initRenderer(outerContainer, container) {
 
                 // TODO: reuse same closure instance?
                 lightCache.put(left + '|' + top, function() {
-                    var dom = lightCache.freeNodes.length > 0 ? lightCache.freeNodes.pop() : null;
-                    if(dom === null) {
-                        dom = $('<div></div>').appendTo(spanContainer);
-                        dom.css(style.css).css({ display: 'block', position: 'absolute' });
-                        dom.text(spanText);
-                    } else {
-                        dom.show();
-                    }
+                    var dom = lightCache.freeNodes.length > 0
+                        ? lightCache.freeNodes.pop()
+                        : createTextSpan(spanText, style.css);
 
                      // only works for IE9+
                     dom.css({ transform: 'translate(' + left + 'px,' + top + 'px)' });
@@ -72,7 +74,7 @@ function initRenderer(outerContainer, container) {
 
             domWordCache.each(function(lightCache) {
                 lightCache.removeUnused(function(dom) {
-                    lightCache.freeNodes.push(dom.hide());
+                    lightCache.freeNodes.push(dom.css({ transform: 'translate(-1000px, -1000px)' }));
                 });
             });
 
