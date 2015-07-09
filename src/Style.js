@@ -35,7 +35,7 @@ function createStyle(stageContainer, extraCss, hashCode) {
             if(result === undefined) {
                 // NOTE: newlines still need to return normal space width
                 stage.text(text === "\n" ? " " : text);
-                result = stage.width();
+                result = stage[0].getBoundingClientRect().width; // only works for IE9+
 
                 computeCount++;
             }

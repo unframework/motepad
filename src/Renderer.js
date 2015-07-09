@@ -62,7 +62,8 @@ function initRenderer(outerContainer, container) {
                         dom.show();
                     }
 
-                    dom.css({ top: top, left: left });
+                     // only works for IE9+
+                    dom.css({ transform: 'translate(' + left + 'px,' + top + 'px)' });
 
                     return dom;
                 });
