@@ -1,10 +1,10 @@
 function createAttributeSequenceImpl(runs) {
     function eachRun(callback) {
         var start = 0;
-        runs.forEach(function (run, i) {
+        runs.every(function (run, i) {
             var r = callback(i, run, start);
             start += run.length;
-            return r;
+            return r !== false;
         });
     }
 
@@ -16,6 +16,7 @@ function createAttributeSequenceImpl(runs) {
             // TODO: merge similar runs
             eachRun(function(i, run, runStart) {
                 if(runStart + run.length <= start) {
+                    // completely before this run
                     newRuns.push(run);
                 } else {
                     if(run.value === value) {
