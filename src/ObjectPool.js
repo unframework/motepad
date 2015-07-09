@@ -1,10 +1,10 @@
 
 function ObjectPool() {
-    this._previousPass = {};
-    this._currentPass = {};
+    this._previousPass = Object.create(null);
+    this._currentPass = Object.create(null);
 }
 
-ObjectPool.prototype.put = function (code, createCallback) {
+ObjectPool.prototype.claim = function (code, createCallback) {
     var currentInstance = this._currentPass[code];
     if (currentInstance !== undefined) {
         return currentInstance;

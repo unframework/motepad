@@ -50,16 +50,21 @@ function initRenderer(outerContainer, container) {
             displayCodeParts = [];
 
             layout.eachTextSpan(function(style, spanText, left, top, width, height) {
-                // TODO: ignore the whitespace spans
+                bottom = top + height;
+
+                if (spanText === ' ') {
+                    return;
+                }
+
                 var heavyCode = style.hashCode + '|' + spanText;
-                var lightCache = domWordCache.put(heavyCode, function() {
+                var lightCache = domWordCache.claim(heavyCode, function() {
                     var result = new ObjectPool();
                     result.freeNodes = [];
                     return result;
                 });
 
                 // TODO: reuse same closure instance?
-                lightCache.put(left + '|' + top, function() {
+                lightCache.claim(left + '|' + top, function() {
                     var dom = lightCache.freeNodes.length > 0
                         ? lightCache.freeNodes.pop()
                         : createTextSpan(spanText, style.css);
@@ -69,7 +74,6 @@ function initRenderer(outerContainer, container) {
 
                     return dom;
                 });
-                bottom = top + height;
             });
 
             domWordCache.each(function(lightCache) {
@@ -136,7 +140,7 @@ function initRenderer(outerContainer, container) {
                     displayCodeParts[3] = w;
                     displayCodeParts[4] = h;
 
-                    selectionDomCache.put(displayCodeParts.join('\u0002'), function() {
+                    selectionDomCache.claim(displayCodeParts.join('\u0002'), function() {
                         var dom = freeSelectionDomNodes.length > 0 ? freeSelectionDomNodes.pop() : $('<div></div>').appendTo(selection);
 
                         boxCss.width = w;
