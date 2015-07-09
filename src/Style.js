@@ -4,6 +4,7 @@ function createStyle(stageContainer, extraCss, hashCode) {
     var fullCss = $.extend({
         'font': 'inherit'
     }, extraCss, {
+        display: 'inline-block',
         'line-height': 1,
         'white-space': 'pre',
         padding: 0,
