@@ -1,6 +1,6 @@
 var $ = require('jquery');
 
-function createStyle(stageContainer, extraCss, hashCode) {
+function createStyle(stageContainer, extraCss, customCharacterHandler, hashCode) {
     var fullCss = $.extend({
         'font': 'inherit'
     }, extraCss, {
@@ -22,10 +22,27 @@ function createStyle(stageContainer, extraCss, hashCode) {
     var prevWidthCache = {}, nextWidthCache = {};
     var computeCount = 0;
 
+    var contentHandler = customCharacterHandler !== null
+        ? function (text, dom) {
+            var i, len = text.length;
+            for (i = 0; i < len; i++) {
+                // enforce per-character display, because spans with same style get auto-merged
+                dom.appendChild(customCharacterHandler(text.charAt(i)));
+            }
+        }
+        : function (text, dom) {
+            dom.appendChild(document.createTextNode(text));
+        }
+
     return {
         min: min, max: max, css: fullCss, hashCode: hashCode,
+        contentHandler: contentHandler,
 
         computeWidth: function(text) {
+            if (text === '') {
+                throw new Error('must have text');
+            }
+
             var result = nextWidthCache[text];
             if(result !== undefined)
                 return result;
@@ -33,8 +50,11 @@ function createStyle(stageContainer, extraCss, hashCode) {
             // get width value from prior pass, or compute it
             result = prevWidthCache[text];
             if(result === undefined) {
+                stage.empty();
+
                 // NOTE: newlines still need to return normal space width
-                stage.text(text === "\n" ? " " : text);
+                contentHandler(text === "\n" ? " " : text, stage[0]);
+
                 result = stage[0].getBoundingClientRect().width; // only works for IE9+
 
                 computeCount++;

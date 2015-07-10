@@ -25,10 +25,15 @@ function initRenderer(outerContainer, container) {
         left: 0, top: 0
     });
 
-    function createTextSpan(spanText, css) {
+    function createTextSpan(spanText, css, contentHandler) {
         var dom = $('<div></div>').appendTo(spanContainer);
         dom.css(css).css({ display: 'block', position: 'absolute' });
-        dom.text(spanText);
+
+        // ignore trailing placeholder
+        if (spanText !== '') {
+            contentHandler(spanText, dom[0]);
+        }
+
         return dom;
     }
 
@@ -42,6 +47,10 @@ function initRenderer(outerContainer, container) {
     var freeSelectionDomNodes = [];
 
     return function render(layout, isFocused, cursorIndex, selStart, selEnd) {
+        if (arguments.length !== 5) {
+            throw new Error('must supply all state');
+        }
+
         var displayCodeParts;
         var interestTop = null, interestBottom = null;
 
@@ -67,7 +76,7 @@ function initRenderer(outerContainer, container) {
                 lightCache.claim(left + '|' + top, function() {
                     var dom = lightCache.freeNodes.length > 0
                         ? lightCache.freeNodes.pop()
-                        : createTextSpan(spanText, style.css);
+                        : createTextSpan(spanText, style.css, style.contentHandler);
 
                      // only works for IE9+
                     dom.css({ transform: 'translate(' + left + 'px,' + top + 'px)' });

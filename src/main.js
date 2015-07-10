@@ -337,7 +337,7 @@ function init(parent) {
             throw "out of bounds";
 
         // render the cursor
-        render(layout, isFocused, cursorIndex);
+        render(layout, isFocused, cursorIndex, null, null);
 
         function currentAttributes() {
             var n;

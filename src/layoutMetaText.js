@@ -51,7 +51,7 @@ module.exports = function layoutMetaText(maxWidth, text, metaBlockCallback, defa
     });
 
     function computeSpanOffset(info, textIndex) {
-        return info.style.computeWidth(text.substring(info.textIndex, textIndex));
+        return info.textIndex === textIndex ? 0 : info.style.computeWidth(text.substring(info.textIndex, textIndex));
     }
 
     return {
@@ -59,6 +59,7 @@ module.exports = function layoutMetaText(maxWidth, text, metaBlockCallback, defa
             var result = 0;
 
             layout.withSpanByLocation(x, y, function(info, left, top, width, height) {
+                // once we found the horizontal span, find the actual text index
                 result = info.textLength < 1 ?
                     info.textIndex :
                     binarySearch(x - left, info.textIndex, info.textIndex + info.textLength - 1, function(i) { return computeSpanOffset(info, i); });

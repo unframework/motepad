@@ -8,19 +8,26 @@ function StyleRegistry(extentsStageContainer, attributeInfo) {
 }
 
 StyleRegistry.prototype.getOrCreate = function(values) {
-    var codeParts = [ '' ]; // avoid colliding with normal properties
+    var codeParts = [ '' ]; // avoid colliding with normal properties by ensuring a leading divider char
     var css = {};
+    var customCharacterHandler = null;
+
     for(var n in this.attributeInfo) {
         codeParts.push(n);
         codeParts.push(this.attributeInfo[n].getHashCode(values[n]));
 
         this.attributeInfo[n].applyVisual(values[n], css);
+
+        if (this.attributeInfo[n].createCharacterContent) {
+            // @todo detect clashes
+            customCharacterHandler = this.attributeInfo[n].createCharacterContent(values[n]);
+        }
     }
 
     var code = codeParts.join(separator);
 
     if(this[code] === undefined)
-        this[code] = createStyle(this.extentsStageContainer, css, code);
+        this[code] = createStyle(this.extentsStageContainer, css, customCharacterHandler, code);
 
     return this[code];
 };
