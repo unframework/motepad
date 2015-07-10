@@ -31,6 +31,7 @@ var attributeInfo = {
     */
     bold: {
         defaultValue: false,
+        isNonSticky: false,
         getHashCode: function(v) { return v ? '1' : ''; },
         applyVisual: function(v, css) { css['font-weight'] = v ? 'bold' : 'normal'; },
         parseHtmlTag: function(tag, styleAttrs) {
@@ -42,6 +43,7 @@ var attributeInfo = {
     },
     italic: {
         defaultValue: false,
+        isNonSticky: false,
         getHashCode: function(v) { return v ? '1' : ''; },
         applyVisual: function(v, css) { css['font-style'] = v ? 'italic' : 'normal'; },
         parseHtmlTag: function(tag, styleAttrs) {
@@ -344,8 +346,13 @@ function init(parent) {
             if(text.length > 0) {
                 /*jslint loopfunc: true */
                 var activeIndex = cursorIndex > 0 ? cursorIndex - 1 : cursorIndex;
-                for(n in attributes)
-                    attributes[n].eachRun(activeIndex, 1, function(v) { values[n] = v; });
+                for(n in attributes) {
+                    if (attributeInfo[n].isNonSticky) {
+                        values[n] = attributeInfo[n].defaultValue;
+                    } else {
+                        attributes[n].eachRun(activeIndex, 1, function(v) { values[n] = v; });
+                    }
+                }
             } else {
                 for(n in attributeInfo)
                     values[n] = attributeInfo[n].defaultValue;
