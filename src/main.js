@@ -326,6 +326,11 @@ function init(parent) {
     }
 
     function cursorMode(layout, isFocused, cursorIndex, intendedOffset, entryAttributes) {
+        // safety check to get all of the state
+        if (arguments.length !== 5) {
+            throw new Error('expecting all args');
+        }
+
         if(cursorIndex < 0 || cursorIndex > text.length)
             throw "out of bounds";
 
@@ -356,7 +361,7 @@ function init(parent) {
                 var delta = (arg > 0 ? 1 : -1);
                 ni = Math.max(0, Math.min(text.length, cursorIndex + delta));
 
-                cursorMode(layout, isFocused, ni);
+                cursorMode(layout, isFocused, ni, null, null);
             } else if(input === "line") {
                 var offset = intendedOffset;
                 if(offset === null)
@@ -366,14 +371,14 @@ function init(parent) {
                 layout.withTextLine(cursorIndex, function(top, height) { edge = arg < 0 ? top - 1 : top + height + 1; });
                 ni = layout.findTextIndex(offset, edge);
 
-                cursorMode(layout, isFocused, ni, offset);
+                cursorMode(layout, isFocused, ni, offset, null);
             } else if(input === "inLine") {
                 var newOffset = arg < 0 ? -1 : Number.POSITIVE_INFINITY;
                 edge = 0;
                 layout.withTextLine(cursorIndex, function(top, height) { edge = top; });
                 ni = layout.findTextIndex(newOffset, edge);
 
-                cursorMode(layout, isFocused, ni, newOffset);
+                cursorMode(layout, isFocused, ni, newOffset, null);
             } else if(input === "characterSelect" || input === "lineSelect" || input === "inLineSelect") {
                 // switch to selected mode with zero-length selection and repeat the command
                 selectedMode(layout, isFocused, cursorIndex, cursorIndex);
@@ -391,14 +396,14 @@ function init(parent) {
                             attributes[n] = attributes[n].remove(delIndex, 1);
 
                         var newLayout = layoutRichText(container.width(), text, attributes, attributeInfo, styles);
-                        cursorMode(newLayout, isFocused, delIndex);
+                        cursorMode(newLayout, isFocused, delIndex, null, null);
 
                     });
                 }
             } else if(input === "insert") {
                 undoable(function() {
 
-                    var values = entryAttributes === undefined ? currentAttributes() : entryAttributes;
+                    var values = entryAttributes === null ? currentAttributes() : entryAttributes;
 
                     text = text.substring(0, cursorIndex) + arg + text.substring(cursorIndex);
                     for(var n in attributes)
@@ -414,7 +419,7 @@ function init(parent) {
                     insertHTML(cursorIndex, arg);
 
                     var newLayout = layoutRichText(container.width(), text, attributes, attributeInfo, styles);
-                    cursorMode(newLayout, isFocused, text.length - distanceFromEnd);
+                    cursorMode(newLayout, isFocused, text.length - distanceFromEnd, null, null);
                 });
             } else if(input === "styleModifier") {
                 var nm = entryAttributes === null ? currentAttributes() : $.extend({}, entryAttributes);
@@ -428,9 +433,9 @@ function init(parent) {
                     return [ attributeInfo[arg].defaultValue ];
                 }
             } else if(input === "refresh") {
-                cursorMode(layout, isFocused, cursorIndex);
+                cursorMode(layout, isFocused, cursorIndex, null, null);
             } else if(input === "focusUpdate") {
-                cursorMode(layout, arg, cursorIndex);
+                cursorMode(layout, arg, cursorIndex, null, null);
             }
         };
     }
@@ -447,13 +452,13 @@ function init(parent) {
             } else if(input === "mouseUp") {
                 ni = layout.findTextIndex(arg.x, arg.y);
                 if(ni === startIndex)
-                    cursorMode(layout, true, ni);
+                    cursorMode(layout, true, ni, null, null);
                 else
                     selectedMode(layout, true, startIndex, ni);
             } else if(input === "focusUpdate") {
-                cursorMode(layout, arg, startIndex);
+                cursorMode(layout, arg, startIndex, null, null);
             } else if(input === "activeAttributeValues") {
-                cursorMode(layout, true, startIndex);
+                cursorMode(layout, true, startIndex, null, null);
                 return inputHandler("activeAttributeValues", arg); // TODO: this better
             } else if(input === "refresh") {
                 throw "should not end up in dragging mode after undo/redo";
@@ -495,7 +500,7 @@ function init(parent) {
                 selectedMode(layout, isFocused, startIndex, ni, newOffset);
             } else if(input === "character" || input === "line" || input === "inLine") {
                 // switch to cursor mode and repeat the command
-                cursorMode(layout, isFocused, endIndex);
+                cursorMode(layout, isFocused, endIndex, null, null);
                 inputHandler(input, arg);
             } else if(input === "insert" || input === "delete" || input === "pasteHtml") {
                 undoable(function() {
@@ -509,7 +514,7 @@ function init(parent) {
                         attributes[n] = attributes[n].remove(a, b - a);
 
                     var newLayout = layoutRichText(container.width(), text, attributes, attributeInfo, styles);
-                    cursorMode(newLayout, isFocused, a);
+                    cursorMode(newLayout, isFocused, a, null, null);
 
                 }); // NOTE: doing a two-step undo here
 
@@ -552,7 +557,7 @@ function init(parent) {
     }
 
     // seed the initial content and mark the first undo snapshot
-    cursorMode(layoutRichText(container.width(), text, attributes, attributeInfo, styles), false, 0);
+    cursorMode(layoutRichText(container.width(), text, attributes, attributeInfo, styles), false, 0, null, null);
 
     undoable(function() {
         var initial = parent.val();
