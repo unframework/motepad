@@ -61,6 +61,9 @@ function initRenderer(outerContainer, container) {
             layout.eachTextSpan(function(style, spanText, left, top, width, height) {
                 bottom = top + height;
 
+                // we do not expect custom character handlers to want to draw space
+                // - because it would be mishandled at line-wrap anyway
+                // (treated as newline and made stick out past display area)
                 if (spanText === ' ') {
                     return;
                 }
