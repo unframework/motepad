@@ -1,8 +1,3 @@
-/**
- * Copyright 2011, 2013 Nick Matantsev
- * Dual-licensed under the MIT or GPL Version 2 licenses.
- */
-
 var $ = require('jquery');
 
 var init = require('./src/main');

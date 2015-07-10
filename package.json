@@ -11,7 +11,7 @@
     "url": "https://github.com/unframework/motepad.git"
   },
   "author": "Nick Matantsev <nick.matantsev@gmail.com>",
-  "license": "Private",
+  "license": "GPLv3",
   "bugs": {
     "url": "https://github.com/unframework/motepad/issues"
   },
