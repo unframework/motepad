@@ -420,6 +420,24 @@ function init(parent) {
                     cursorMode(newLayout, isFocused, cursorIndex + arg.length, null, values);
 
                 });
+            } else if(input === "insertStyled") {
+                // insert characters with specific attribute being set to a value
+                // @todo evolve beyond debug usage
+                undoable(function() {
+
+                    var values = entryAttributes === null ? currentAttributes() : entryAttributes;
+                    var newText = arg.text;
+                    var newAttr = arg.attribute;
+                    var newAttrValue = arg.attributeValue;
+
+                    text = text.substring(0, cursorIndex) + newText + text.substring(cursorIndex);
+                    for(var n in attributes)
+                        attributes[n] = attributes[n].insert(newAttr === n ? newAttrValue : values[n], cursorIndex, newText.length);
+
+                    var newLayout = layoutRichText(container.width(), text, attributes, attributeInfo, styles);
+                    cursorMode(newLayout, isFocused, cursorIndex + newText.length, null, values);
+
+                });
             } else if(input === "pasteHtml") {
                 undoable(function() {
                     var distanceFromEnd = text.length - cursorIndex;
