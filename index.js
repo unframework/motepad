@@ -11,8 +11,8 @@ $.fn.richText = function(command, arg) {
 
     var commands = parent.data(richTextDataId);
 
-    if(commands === undefined) {
-        commands = init(parent);
+    if(commands === undefined && command === 'create') {
+        commands = init(arg, parent);
         parent.data(richTextDataId, commands);
     }
 };
