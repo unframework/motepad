@@ -1,6 +1,7 @@
 var $ = require('jquery');
 var HTMLParser = require('../htmlparser').HTMLParser;
 
+var TextFormat = require('./TextFormat');
 var resetMetricsCss = require('./resetCss');
 var createAttributeSequence = require('./AttributeSequence');
 var createStyle = require('./Style');
@@ -9,7 +10,8 @@ var initRenderer = require('./Renderer');
 var initInput = require('./Input');
 var layoutRichText = require('./layoutRichText');
 
-var attributeInfo = {
+var format = new TextFormat();
+
     /*
     link: {
         defaultValue: null,
@@ -29,29 +31,32 @@ var attributeInfo = {
         closeHtmlTag: function(v) { return (v ? '</a>' : '') }
     },
     */
-    bold: {
-        defaultValue: false,
-        getHashCode: function(v) { return v ? '1' : ''; },
-        applyVisual: function(v, css) { css['font-weight'] = v ? 'bold' : 'normal'; },
-        parseHtmlTag: function(tag, styleAttrs) {
-            if(tag === 'b' || tag === 'strong' || styleAttrs['font-weight'] === 'bold')
-                return true;
-        },
-        openHtmlTag: function(v) { return (v ? '<b>' : ''); },
-        closeHtmlTag: function(v) { return (v ? '</b>' : ''); }
+
+format.defineStyle('bold', {
+    defaultValue: false,
+    getHashCode: function(v) { return v ? '1' : ''; },
+    applyVisual: function(v, css) { css['font-weight'] = v ? 'bold' : 'normal'; },
+    parseHtmlTag: function(tag, styleAttrs) {
+        if(tag === 'b' || tag === 'strong' || styleAttrs['font-weight'] === 'bold')
+            return true;
     },
-    italic: {
-        defaultValue: false,
-        getHashCode: function(v) { return v ? '1' : ''; },
-        applyVisual: function(v, css) { css['font-style'] = v ? 'italic' : 'normal'; },
-        parseHtmlTag: function(tag, styleAttrs) {
-            if(tag === 'i' || tag === 'em' || styleAttrs['font-style'] === 'italic')
-                return true;
-        },
-        openHtmlTag: function(v) { return (v ? '<i>' : ''); },
-        closeHtmlTag: function(v) { return (v ? '</i>' : ''); }
-    }
-};
+    openHtmlTag: function(v) { return (v ? '<b>' : ''); },
+    closeHtmlTag: function(v) { return (v ? '</b>' : ''); }
+});
+
+format.defineStyle('italic', {
+    defaultValue: false,
+    getHashCode: function(v) { return v ? '1' : ''; },
+    applyVisual: function(v, css) { css['font-style'] = v ? 'italic' : 'normal'; },
+    parseHtmlTag: function(tag, styleAttrs) {
+        if(tag === 'i' || tag === 'em' || styleAttrs['font-style'] === 'italic')
+            return true;
+    },
+    openHtmlTag: function(v) { return (v ? '<i>' : ''); },
+    closeHtmlTag: function(v) { return (v ? '</i>' : ''); }
+});
+
+var attributeInfo = format._extractInfo();
 
 function init(parent) {
     var outerContainer = $('<div></div>').addClass('editArea').insertAfter(parent).css({
