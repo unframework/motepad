@@ -18,7 +18,7 @@ var style = '.editArea {'
 + '}'
 + 'body { font-size: 16px; }';
 
-$('body').append('<div style="width:600px;margin:30px auto;"><textarea id="testInput">&lt;a href="about:blank">This is a &lt;b>lovely&lt;/b>&lt;/a> test</textarea></div>')
+$('body').append('<div style="width:600px;margin:30px auto;"><textarea id="testInput">&lt;a href="about:blank">This&lt;/a> is a &lt;b>lovely&lt;/b> test</textarea></div>')
 var htmlButton = $('<button>See HTML</button>').appendTo($('<div style="text-align:center"></div>').appendTo(document.body));
 
 document.getElementsByTagName('head')[0].appendChild((function (html) {
@@ -29,25 +29,23 @@ document.getElementsByTagName('head')[0].appendChild((function (html) {
 
 var format = new TextFormat();
 
-    /*
-    link: {
-        defaultValue: null,
-        getHashCode: function(v) { return v !== null ? '1' : '' },
-        applyVisual: function(v, css) {
-            if(v !== null) {
-                css['color'] = '#00f';
-                css['border-bottom'] = '1px solid #00f';
-            }
-        },
-        parseHtmlTag: function(tag, styleAttrs, attrs) {
-            if(tag === 'a') {
-                return attrs['href'];
-            }
-        },
-        openHtmlTag: function(v) { return (v ? '<a>' : '') },
-        closeHtmlTag: function(v) { return (v ? '</a>' : '') }
+format.defineStyle('link', {
+    defaultValue: null,
+    getHashCode: function(v) { return v !== null ? '1' : '' },
+    applyVisual: function(v, css) {
+        if(v) {
+            css['color'] = '#00f';
+            css['border-bottom'] = '1px solid #00f';
+        }
     },
-    */
+    parseHtmlTag: function(tag, styleAttrs, attrs) {
+        if(tag === 'a') {
+            return attrs['href'];
+        }
+    },
+    openHtmlTag: function(v) { return (v ? '<a href="' + v + '">' : '') },
+    closeHtmlTag: function(v) { return (v ? '</a>' : '') }
+});
 
 format.defineStyle('bold', {
     defaultValue: false,
