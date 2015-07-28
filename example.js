@@ -19,6 +19,7 @@ var style = '.editArea {'
 + 'body { font-size: 16px; }';
 
 $('body').append('<div style="width:600px;margin:30px auto;"><textarea id="testInput">&lt;a href="about:blank">This is a &lt;b>lovely&lt;/b>&lt;/a> test</textarea></div>')
+var htmlButton = $('<button>See HTML</button>').appendTo($('<div style="text-align:center"></div>').appendTo(document.body));
 
 document.getElementsByTagName('head')[0].appendChild((function (html) {
     var span = document.createElement('span');
@@ -73,5 +74,11 @@ format.defineStyle('italic', {
 });
 
 $(function() {
-    $('#testInput').richText('create', format);
+    var control = $('#testInput').richText('create', format);
+
+    htmlButton.click(function () {
+        control.richText('exportHTML', function (html) {
+            alert(html);
+        });
+    });
 });

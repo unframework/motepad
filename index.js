@@ -11,10 +11,16 @@ $.fn.richText = function(command, arg) {
 
     var commands = parent.data(richTextDataId);
 
-    if(commands === undefined && command === 'create') {
-        commands = init(arg, parent);
-        parent.data(richTextDataId, commands);
+    if(commands === undefined) {
+        if (command === 'create') {
+            commands = init(arg, parent);
+            parent.data(richTextDataId, commands);
+        }
+    } else {
+        commands[command](arg);
     }
+
+    return this;
 };
 
 /*

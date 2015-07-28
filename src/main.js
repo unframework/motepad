@@ -526,7 +526,9 @@ function init(format, parent) {
 
     // return command-set
     return {
-
+        exportHTML: function (cb) {
+            cb(toHTML(0, text.length));
+        }
     };
 }
 
